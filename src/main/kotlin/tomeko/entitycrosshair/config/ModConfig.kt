@@ -17,24 +17,10 @@ object ModConfig : Config(Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Consta
     @Exclude
     var drawer = HashMap<Int, Int>()
 
-    @DualOption(
-        name = "Mode",
-        left = "Vanilla",
-        right = "Custom",
-        size = 2
-    )
-    var mode = false
-
     @CustomOption
     var newCrosshairs = arrayListOf(CrosshairEntry())
 
     var penColor = OneColor(-1)
-
-    @Dropdown(
-        name = "Mirror",
-        options = ["Off", "Horizontal", "Vertical", "Quadrant"]
-    )
-    var mirror = 0
 
     @Slider(
         name = "Canva Size",
@@ -51,16 +37,6 @@ object ModConfig : Config(Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Consta
         initialize()
         this.generateOptionList(newCurrentCrosshair, mod.defaultPage, this.mod, false)
         this.generateOptionList(renderConfig, mod.defaultPage, this.mod, false)
-        var options = listOf("hostile", "passive", "player", "hostileColor", "passiveColor", "playerColor", "dynamicOpacity")
-        for (i in options) {
-            hideIf(i) { !renderConfig.dynamicColor }
-        }
-        addDependency(options[3], options[0])
-        addDependency(options[4], options[1])
-        addDependency(options[5], options[2])
-        addDependency("centered", "mode")
-        options = listOf("mirror", "canvaSize")
-        options.forEach { hideIf(it) { !mode } }
         addListener("canvaSize") {
             for (i in drawer) {
                 val pos = indexToPos(i.key)
@@ -78,7 +54,6 @@ object ModConfig : Config(Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Consta
         mod: Mod,
         migrate: Boolean,
     ): BasicOption? {
-        Drawer.addHideCondition { !mode }
         ConfigUtils.getSubCategory(page, "General", "").options.add(Drawer)
         return null
     }

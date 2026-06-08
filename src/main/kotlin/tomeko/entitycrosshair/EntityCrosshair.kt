@@ -6,6 +6,7 @@ import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
+import tomeko.entitycrosshair.config.ModConfig
 import tomeko.entitycrosshair.render.CrosshairRenderer
 import tomeko.entitycrosshair.utils.Constants
 
@@ -20,6 +21,8 @@ object EntityCrosshair {
     fun onInitializeClient(event: FMLInitializationEvent) {
         clearCaches()
         Constants.CACHES_FILE.mkdirs()
+
+        ModConfig
 
         EventManager.INSTANCE.register(this)
     }

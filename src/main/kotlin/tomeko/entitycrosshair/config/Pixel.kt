@@ -52,10 +52,10 @@ class Pixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRIMARY, true, 0
         hovered = inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
         if (hovered && OneConfigGui.INSTANCE.currentColorSelector == null) {
             if (inputHandler.isMouseDown) {
-                doMirror(true, ModConfig.penColor.rgb)
+                set(true, ModConfig.penColor.rgb)
             }
             if (inputHandler.isMouseDown(1)) {
-                doMirror(false, color)
+                set(false, color)
             }
         }
         if (lastToggled != isToggled) {
@@ -69,43 +69,9 @@ class Pixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRIMARY, true, 0
         currentColor = if (isToggled) color else backgroundColor
     }
 
-    fun doMirror(toggle: Boolean, color: Int) {
-        val mode = ModConfig.mirror
-        set(toggle, color)
-        if (mode == 0) return
-        val size = ModConfig.canvaSize
-
-        val center = (size + 1) / 2f - 1
-        val disX = center - posX
-        val disY = center - posY
-        if (mode == 3 && size % 2 == 1 && (disX.toInt() == 0 || disY.toInt() == 0)) {
-            val distance = max(abs(disX), abs(disY)).toInt()
-            val c = center.toInt()
-            setPixel(c + distance, c, toggle, color)
-            setPixel(c - distance, c, toggle, color)
-            setPixel(c, c + distance, toggle, color)
-            setPixel(c, c - distance, toggle, color)
-        } else {
-            if (mode == 1 || mode == 3) {
-                setPixel((center + disX).toInt(), posY, toggle, color)
-            }
-            if (mode == 2 || mode == 3) {
-                setPixel(posX, (center + disY).toInt(), toggle, color)
-            }
-            if (mode == 3) {
-                setPixel((center + disX).toInt(), (center + disY).toInt(), toggle, color)
-            }
-        }
-    }
-
-    fun setPixel(x: Int, y: Int, toggle: Boolean, color: Int) {
-        Drawer.pixels[posToIndex(x, y)].set(toggle, color)
-    }
-
     fun set(toggle: Boolean, color: Int) {
         isToggled = toggle
         if (!toggle) return
         this.color = color
     }
-
 }
