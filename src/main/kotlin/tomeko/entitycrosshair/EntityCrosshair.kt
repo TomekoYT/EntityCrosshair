@@ -6,9 +6,9 @@ import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
-import tomeko.entitycrosshair.config.EntityCrosshairConfig
-import tomeko.entitycrosshair.render.CrosshairRenderer
-import tomeko.entitycrosshair.utils.Constants
+import tomeko.entitycrosshair.config.*
+import tomeko.entitycrosshair.render.*
+import tomeko.entitycrosshair.utils.*
 
 @Mod(
     name = Constants.MOD_NAME,
@@ -22,6 +22,7 @@ object EntityCrosshair {
         clearCaches()
         Constants.CACHES_FILE.mkdirs()
 
+        CloseInactiveConfigScreen
         EntityCrosshairConfig
 
         EventManager.INSTANCE.register(this)
