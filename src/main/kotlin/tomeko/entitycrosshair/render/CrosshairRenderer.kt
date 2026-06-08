@@ -15,7 +15,7 @@ import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
-import tomeko.entitycrosshair.config.ModConfig
+import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import tomeko.entitycrosshair.mixins.GuiIngameAccessor
 import tomeko.entitycrosshair.mixins.MinecraftAccessor
 import tomeko.entitycrosshair.utils.Constants
@@ -83,13 +83,13 @@ object CrosshairRenderer {
             textureLocation.let { mc.textureManager.bindTexture(it) }
             val mcScale = UResolution.scaleFactor.toFloat()
             GL.scale(1 / mcScale, 1 / mcScale, 1f)
-            val crosshair = ModConfig.newCurrentCrosshair
+            val crosshair = EntityCrosshairConfig.newCurrentCrosshair
             GL.translate(crosshair.offsetX.toFloat(), crosshair.offsetY.toFloat(), 0f)
             GL.translate((UResolution.windowWidth / 2).toFloat(), (UResolution.windowHeight / 2).toFloat(), 0f)
             GL.rotate(crosshair.rotation.toFloat(), 0f, 0f, 1f)
             val scale = crosshair.scale / 100f
             val textureSize = 16
-            val autoScaledSize = if (ModConfig.canvaSize % 2 == 0) 16 else 15
+            val autoScaledSize = if (EntityCrosshairConfig.canvaSize % 2 == 0) 16 else 15
             val size = ceil(autoScaledSize * mcScale * scale).toInt()
             val translation = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * mcScale * scale)
             GL.translate(translation, translation, 0f)

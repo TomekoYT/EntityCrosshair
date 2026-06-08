@@ -12,8 +12,7 @@ import tomeko.entitycrosshair.utils.indexToPos
 import java.lang.reflect.Field
 import kotlin.collections.iterator
 
-object ModConfig : Config(Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Constants.MOD_ID}/icon.png"), "${Constants.MOD_ID}/config.json") {
-
+object EntityCrosshairConfig : Config(Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Constants.MOD_ID}/icon.png"), "${Constants.MOD_ID}/config.json") {
     @Exclude
     var drawer = HashMap<Int, Int>()
 

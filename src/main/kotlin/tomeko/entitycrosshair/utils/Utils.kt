@@ -5,7 +5,7 @@ package tomeko.entitycrosshair.utils
 import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.utils.*
 import tomeko.entitycrosshair.config.CrosshairEntry
-import tomeko.entitycrosshair.config.ModConfig
+import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
@@ -31,16 +31,16 @@ fun export(image: BufferedImage?, name: String): String {
 fun save(image: OneImage?) {
     image ?: return
     val base64 = toBase64(image.image)
-    ModConfig.newCrosshairs.forEach {
+    EntityCrosshairConfig.newCrosshairs.forEach {
         if (it.img == base64) {
-            it.loadFrom(ModConfig.newCurrentCrosshair)
+            it.loadFrom(EntityCrosshairConfig.newCurrentCrosshair)
             return
         }
     }
     val entry = CrosshairEntry()
-    entry.loadFrom(ModConfig.newCurrentCrosshair)
+    entry.loadFrom(EntityCrosshairConfig.newCurrentCrosshair)
     entry.img = base64
-    ModConfig.newCrosshairs.add(entry)
+    EntityCrosshairConfig.newCrosshairs.add(entry)
 }
 
 fun toBufferedImage(string: String): BufferedImage? {

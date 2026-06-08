@@ -9,7 +9,7 @@ import cc.polyfrost.oneconfig.internal.assets.Images
 import cc.polyfrost.oneconfig.renderer.NanoVGHelper
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.dsl.renderTick
-import tomeko.entitycrosshair.config.ModConfig
+import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import java.awt.Color
 
 class ColorSelector : BasicElement(64, 32, false) {
@@ -21,7 +21,7 @@ class ColorSelector : BasicElement(64, 32, false) {
         if (OneConfigGui.INSTANCE == null) return
         val nanoVGHelper = NanoVGHelper.INSTANCE
 
-        var color = ModConfig.penColor
+        var color = EntityCrosshairConfig.penColor
 
         element.update(x, y, inputHandler)
         nanoVGHelper.drawHollowRoundRect(vg, x, y - 1, 64f, 32f, Color(73, 79, 92, 255).rgb, 12f, 2f)
@@ -38,7 +38,7 @@ class ColorSelector : BasicElement(64, 32, false) {
         }
         if (OneConfigGui.INSTANCE.currentColorSelector !== colorSelector) open = false
         else if (open) color = (OneConfigGui.INSTANCE.color)
-        ModConfig.penColor = color
+        EntityCrosshairConfig.penColor = color
     }
 
 }
