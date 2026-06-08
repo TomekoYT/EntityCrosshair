@@ -89,8 +89,7 @@ object CrosshairRenderer {
             GL.rotate(crosshair.rotation.toFloat(), 0f, 0f, 1f)
             val scale = crosshair.scale / 100f
             val textureSize = 16
-            val autoScaledSize =
-                if ((if (isLookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.canvaSize else EntityCrosshairConfig.defaultCanvaConfig.canvaSize) % 2 == 0) 16 else 15
+            val autoScaledSize = if (EntityCrosshairConfig.defaultCanvaConfig.canvaSize % 2 == 0) 16 else 15
             val size = ceil(autoScaledSize * mcScale * scale).toInt()
             val translation = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * mcScale * scale)
             GL.translate(translation, translation, 0f)
@@ -116,11 +115,5 @@ object CrosshairRenderer {
                 RenderGameOverlayEvent.ElementType.CROSSHAIRS
             )
         )
-    }
-
-    private fun isLookingAtEntity(): Boolean {
-        val entity = mc.objectMouseOver?.entityHit ?: return false
-
-        return !entity.isInvisible
     }
 }

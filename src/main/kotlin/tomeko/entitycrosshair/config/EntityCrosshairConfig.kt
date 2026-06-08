@@ -11,7 +11,6 @@ import tomeko.entitycrosshair.config.elements.*
 import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.indexToPos
 import java.lang.reflect.Field
-import kotlin.collections.iterator
 
 object EntityCrosshairConfig : Config(
     Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Constants.MOD_ID}/icon.png"),
@@ -45,8 +44,9 @@ object EntityCrosshairConfig : Config(
     init {
         initialize()
 
-        this.generateOptionList(defaultCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
         this.generateOptionList(defaultCanvaConfig, mod.defaultPage, this.mod, false)
+        this.generateOptionList(defaultCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
+
         addListener("defaultCanvaConfig.canvaSize") {
             for (i in defaultCanvaConfig.drawerMap) {
                 val pos = indexToPos(i.key)
@@ -56,8 +56,9 @@ object EntityCrosshairConfig : Config(
             }
         }
 
-        this.generateOptionList(entityCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
         this.generateOptionList(entityCanvaConfig, mod.defaultPage, this.mod, false)
+        this.generateOptionList(entityCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
+
         addListener("entityCanvaConfig.canvaSize") {
             for (i in entityCanvaConfig.drawerMap) {
                 val pos = indexToPos(i.key)
@@ -79,12 +80,10 @@ object EntityCrosshairConfig : Config(
             CATEGORY_ENTITY -> {
                 ConfigUtils.getSubCategory(page, CATEGORY_ENTITY, "").options.add(EntityDrawer)
             }
-
             else -> {
                 ConfigUtils.getSubCategory(page, CATEGORY_DEFAULT, "").options.add(DefaultDrawer)
             }
         }
         return null
     }
-
 }
