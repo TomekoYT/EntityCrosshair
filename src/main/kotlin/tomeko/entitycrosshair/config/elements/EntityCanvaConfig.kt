@@ -6,25 +6,22 @@ import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.core.OneColor
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
 
-class EntityCanvaConfig : CanvaConfig() {
+class EntityCanvaConfig {
     @Exclude
-    override var drawerMap = HashMap<Int, Int>()
+    var drawerMap = HashMap<Int, Int>()
 
     @CustomOption(id = EntityCrosshairConfig.CATEGORY_ENTITY)
-    override var newCrosshairs = arrayListOf(CrosshairEntry(this))
+    var newCrosshairs = arrayListOf(EntityCrosshairEntry())
 
-    override var penColor = OneColor(-1)
+    var penColor = OneColor(-1)
 
     @Slider(
         name = "Canva Size",
         min = 15f, max = 32f,
         category = EntityCrosshairConfig.CATEGORY_ENTITY
     )
-    override var canvaSize = 15
+    var canvaSize = 15
         get() = field.coerceIn(15, 32)
 
-    override var newCurrentCrosshair = CrosshairEntry(this)
-
-    @Exclude
-    override var drawer = Drawer(this)
+    var newCurrentCrosshair = EntityCrosshairEntry()
 }

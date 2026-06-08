@@ -7,8 +7,7 @@ import cc.polyfrost.oneconfig.config.annotations.*
 import cc.polyfrost.oneconfig.config.core.*
 import cc.polyfrost.oneconfig.config.data.*
 import cc.polyfrost.oneconfig.config.elements.*
-import tomeko.entitycrosshair.config.elements.DefaultCanvaConfig
-import tomeko.entitycrosshair.config.elements.EntityCanvaConfig
+import tomeko.entitycrosshair.config.elements.*
 import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.indexToPos
 import java.lang.reflect.Field
@@ -52,7 +51,7 @@ object EntityCrosshairConfig : Config(
             for (i in defaultCanvaConfig.drawerMap) {
                 val pos = indexToPos(i.key)
                 if (pos.x >= defaultCanvaConfig.canvaSize || pos.y >= defaultCanvaConfig.canvaSize) {
-                    defaultCanvaConfig.drawer.pixels[i.key].isToggled = false
+                    DefaultDrawer.pixels[i.key].isToggled = false
                 }
             }
         }
@@ -63,7 +62,7 @@ object EntityCrosshairConfig : Config(
             for (i in entityCanvaConfig.drawerMap) {
                 val pos = indexToPos(i.key)
                 if (pos.x >= entityCanvaConfig.canvaSize || pos.y >= entityCanvaConfig.canvaSize) {
-                    entityCanvaConfig.drawer.pixels[i.key].isToggled = false
+                    EntityDrawer.pixels[i.key].isToggled = false
                 }
             }
         }
@@ -78,11 +77,11 @@ object EntityCrosshairConfig : Config(
     ): BasicOption? {
         when (annotation.id) {
             CATEGORY_ENTITY -> {
-                ConfigUtils.getSubCategory(page, CATEGORY_ENTITY, "").options.add(entityCanvaConfig.drawer)
+                ConfigUtils.getSubCategory(page, CATEGORY_ENTITY, "").options.add(EntityDrawer)
             }
 
             else -> {
-                ConfigUtils.getSubCategory(page, CATEGORY_DEFAULT, "").options.add(defaultCanvaConfig.drawer)
+                ConfigUtils.getSubCategory(page, CATEGORY_DEFAULT, "").options.add(DefaultDrawer)
             }
         }
         return null

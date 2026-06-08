@@ -83,8 +83,7 @@ object CrosshairRenderer {
             textureLocation.let { mc.textureManager.bindTexture(it) }
             val mcScale = UResolution.scaleFactor.toFloat()
             GL.scale(1 / mcScale, 1 / mcScale, 1f)
-            val crosshair =
-                if (isLookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair else EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair
+            val crosshair = EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair
             GL.translate(crosshair.offsetX.toFloat(), crosshair.offsetY.toFloat(), 0f)
             GL.translate((UResolution.windowWidth / 2).toFloat(), (UResolution.windowHeight / 2).toFloat(), 0f)
             GL.rotate(crosshair.rotation.toFloat(), 0f, 0f, 1f)

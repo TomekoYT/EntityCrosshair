@@ -21,7 +21,7 @@ import java.util.*
 private val remove = SVG("/assets/${Constants.MOD_ID}/icons/trashcan.svg")
 private val copy = SVG("/assets/${Constants.MOD_ID}/icons/copy.svg")
 
-class PresetElement(val canvaConfig: CanvaConfig, val crosshair: CrosshairEntry) : BasicElement(149, 149, ColorPalette.SECONDARY, true) {
+class DefaultPresetElement(val crosshair: DefaultCrosshairEntry) : BasicElement(149, 149, ColorPalette.SECONDARY, true) {
     val removeButton = BasicButton(32, 32, remove, 2, ColorPalette.TERTIARY)
     val copyButton = BasicButton(32, 32, copy, 2, ColorPalette.TERTIARY)
     val bufferedImage = toBufferedImage(crosshair.img)
@@ -30,7 +30,7 @@ class PresetElement(val canvaConfig: CanvaConfig, val crosshair: CrosshairEntry)
 
     init {
         removeButton.setClickAction {
-            canvaConfig.drawer.removeQueue.add(crosshair)
+            DefaultDrawer.removeQueue.add(crosshair)
         }
         copyButton.setClickAction {
             copy(bufferedImage)
@@ -38,7 +38,7 @@ class PresetElement(val canvaConfig: CanvaConfig, val crosshair: CrosshairEntry)
     }
 
     override fun update(x: Float, y: Float, inputHandler: InputHandler) {
-        hovered = canvaConfig.drawer.inArea && inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
+        hovered = DefaultDrawer.inArea && inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
         pressed = hovered && Platform.getMousePlatform().isButtonDown(0)
         clicked = inputHandler.isClicked(false) && hovered
 
@@ -67,13 +67,13 @@ class PresetElement(val canvaConfig: CanvaConfig, val crosshair: CrosshairEntry)
 
     fun onRemove() {
         File(Constants.CACHES_PATH + fileName + ".png").delete()
-        canvaConfig.drawer.elements.remove(crosshair)
+        DefaultDrawer.elements.remove(crosshair)
     }
 
     override fun onClick() {
         if (copyButton.isHovered) return
         if (removeButton.isHovered) return
-        canvaConfig.drawer.clear()
-        canvaConfig.drawer.loadImage(bufferedImage, false, crosshair)
+        DefaultDrawer.clear()
+        DefaultDrawer.loadImage(bufferedImage, false, crosshair)
     }
 }

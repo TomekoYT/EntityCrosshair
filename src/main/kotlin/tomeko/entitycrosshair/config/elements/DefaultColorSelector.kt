@@ -9,9 +9,10 @@ import cc.polyfrost.oneconfig.internal.assets.Images
 import cc.polyfrost.oneconfig.renderer.NanoVGHelper
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.dsl.renderTick
+import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import java.awt.Color
 
-class ColorSelector(val canvaConfig: CanvaConfig) : BasicElement(64, 32, false) {
+class DefaultColorSelector : BasicElement(64, 32, false) {
     private val element = BasicElement(64, 32, false)
     private var colorSelector: ColorSelector? = null
     private var open = false
@@ -20,7 +21,7 @@ class ColorSelector(val canvaConfig: CanvaConfig) : BasicElement(64, 32, false) 
         if (OneConfigGui.INSTANCE == null) return
         val nanoVGHelper = NanoVGHelper.INSTANCE
 
-        var color = canvaConfig.penColor
+        var color = EntityCrosshairConfig.defaultCanvaConfig.penColor
 
         element.update(x, y, inputHandler)
         nanoVGHelper.drawHollowRoundRect(vg, x, y - 1, 64f, 32f, Color(73, 79, 92, 255).rgb, 12f, 2f)
@@ -37,7 +38,7 @@ class ColorSelector(val canvaConfig: CanvaConfig) : BasicElement(64, 32, false) 
         }
         if (OneConfigGui.INSTANCE.currentColorSelector !== colorSelector) open = false
         else if (open) color = (OneConfigGui.INSTANCE.color)
-        canvaConfig.penColor = color
+        EntityCrosshairConfig.defaultCanvaConfig.penColor = color
     }
 
 }

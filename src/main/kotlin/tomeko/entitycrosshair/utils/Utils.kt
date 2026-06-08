@@ -4,8 +4,9 @@ package tomeko.entitycrosshair.utils
 
 import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.utils.*
-import tomeko.entitycrosshair.config.elements.CanvaConfig
-import tomeko.entitycrosshair.config.elements.CrosshairEntry
+import tomeko.entitycrosshair.config.EntityCrosshairConfig
+import tomeko.entitycrosshair.config.elements.DefaultCrosshairEntry
+import tomeko.entitycrosshair.config.elements.EntityCrosshairEntry
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
@@ -28,19 +29,34 @@ fun export(image: BufferedImage?, name: String): String {
     return path
 }
 
-fun save(canvaConfig: CanvaConfig, image: OneImage?) {
+fun saveDefault(image: OneImage?) {
     image ?: return
     val base64 = toBase64(image.image)
-    canvaConfig.newCrosshairs.forEach {
+    EntityCrosshairConfig.defaultCanvaConfig.newCrosshairs.forEach {
         if (it.img == base64) {
-            it.loadFrom(canvaConfig.newCurrentCrosshair)
+            it.loadFrom(EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair)
             return
         }
     }
-    val entry = CrosshairEntry(canvaConfig)
-    entry.loadFrom(canvaConfig.newCurrentCrosshair)
+    val entry = DefaultCrosshairEntry()
+    entry.loadFrom(EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair)
     entry.img = base64
-    canvaConfig.newCrosshairs.add(entry)
+    EntityCrosshairConfig.defaultCanvaConfig.newCrosshairs.add(entry)
+}
+
+fun saveEntity(image: OneImage?) {
+    image ?: return
+    val base64 = toBase64(image.image)
+    EntityCrosshairConfig.entityCanvaConfig.newCrosshairs.forEach {
+        if (it.img == base64) {
+            it.loadFrom(EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair)
+            return
+        }
+    }
+    val entry = EntityCrosshairEntry()
+    entry.loadFrom(EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair)
+    entry.img = base64
+    EntityCrosshairConfig.entityCanvaConfig.newCrosshairs.add(entry)
 }
 
 fun toBufferedImage(string: String): BufferedImage? {
