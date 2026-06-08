@@ -7,40 +7,59 @@ import cc.polyfrost.oneconfig.config.annotations.*
 import cc.polyfrost.oneconfig.config.core.*
 import cc.polyfrost.oneconfig.config.data.*
 import cc.polyfrost.oneconfig.config.elements.*
+import tomeko.entitycrosshair.config.elements.DefaultCanvaConfig
+import tomeko.entitycrosshair.config.elements.EntityCanvaConfig
 import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.indexToPos
 import java.lang.reflect.Field
 import kotlin.collections.iterator
 
-object EntityCrosshairConfig : Config(Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Constants.MOD_ID}/icon.png"), "${Constants.MOD_ID}/config.json") {
+object EntityCrosshairConfig : Config(
+    Mod(Constants.MOD_NAME, ModType.HUD, "/assets/${Constants.MOD_ID}/icon.png"),
+    "${Constants.MOD_ID}/config.json"
+) {
     @Exclude
-    var drawer = HashMap<Int, Int>()
+    private const val CATEGORY_GENERAL = "General"
 
-    @CustomOption
-    var newCrosshairs = arrayListOf(CrosshairEntry())
+    @Switch(name = "Show in F3 (Debug)", category = CATEGORY_GENERAL)
+    var showInDebug = false
 
-    var penColor = OneColor(-1)
+    @Switch(name = "Show in GUIs", category = CATEGORY_GENERAL)
+    var showInGuis = true
 
-    @Slider(
-        name = "Canva Size",
-        min = 15f, max = 32f
-    )
-    var canvaSize = 15
-        get() = field.coerceIn(15, 32)
+    @Switch(name = "Show in Third Person", category = CATEGORY_GENERAL)
+    var showInThirdPerson = true
 
-    var newCurrentCrosshair = CrosshairEntry()
+    @Switch(name = "Show in Spectator Mode", category = CATEGORY_GENERAL)
+    var showInSpectator = true
 
-    var renderConfig = RenderConfig()
+    @Exclude
+    const val CATEGORY_DEFAULT = "Default"
+
+    var defaultCanvaConfig = DefaultCanvaConfig()
+
+    @Exclude
+    const val CATEGORY_ENTITY = "Entity"
+
+    var entityCanvaConfig = EntityCanvaConfig()
 
     init {
         initialize()
-        this.generateOptionList(newCurrentCrosshair, mod.defaultPage, this.mod, false)
-        this.generateOptionList(renderConfig, mod.defaultPage, this.mod, false)
-        addListener("canvaSize") {
-            for (i in drawer) {
+        this.generateOptionList(defaultCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
+        this.generateOptionList(defaultCanvaConfig, mod.defaultPage, this.mod, false)
+        addListener("defaultCanvaConfig.canvaSize") {
+            for (i in defaultCanvaConfig.drawerMap) {
                 val pos = indexToPos(i.key)
-                if (pos.x >= canvaSize || pos.y >= canvaSize) {
-                    Drawer.pixels[i.key].isToggled = false
+                if (pos.x >= defaultCanvaConfig.canvaSize || pos.y >= defaultCanvaConfig.canvaSize) {
+                    defaultCanvaConfig.drawer.pixels[i.key].isToggled = false
+                }
+            }
+        }
+        addListener("entityCanvaConfig.canvaSize") {
+            for (i in entityCanvaConfig.drawerMap) {
+                val pos = indexToPos(i.key)
+                if (pos.x >= entityCanvaConfig.canvaSize || pos.y >= entityCanvaConfig.canvaSize) {
+                    entityCanvaConfig.drawer.pixels[i.key].isToggled = false
                 }
             }
         }
@@ -53,7 +72,15 @@ object EntityCrosshairConfig : Config(Mod(Constants.MOD_NAME, ModType.HUD, "/ass
         mod: Mod,
         migrate: Boolean,
     ): BasicOption? {
-        ConfigUtils.getSubCategory(page, "General", "").options.add(Drawer)
+        when (annotation.id) {
+            CATEGORY_ENTITY -> {
+                ConfigUtils.getSubCategory(page, CATEGORY_ENTITY, "").options.add(entityCanvaConfig.drawer)
+            }
+
+            else -> {
+                ConfigUtils.getSubCategory(page, CATEGORY_DEFAULT, "").options.add(defaultCanvaConfig.drawer)
+            }
+        }
         return null
     }
 

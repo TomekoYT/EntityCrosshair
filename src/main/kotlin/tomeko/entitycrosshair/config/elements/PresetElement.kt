@@ -1,6 +1,6 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.elements
+package tomeko.entitycrosshair.config.elements
 
 import cc.polyfrost.oneconfig.gui.elements.BasicButton
 import cc.polyfrost.oneconfig.gui.elements.BasicElement
@@ -11,8 +11,6 @@ import cc.polyfrost.oneconfig.renderer.asset.SVG
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.color.ColorPalette
 import cc.polyfrost.oneconfig.utils.dsl.nanoVGHelper
-import tomeko.entitycrosshair.config.CrosshairEntry
-import tomeko.entitycrosshair.config.Drawer
 import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.copy
 import tomeko.entitycrosshair.utils.export
@@ -23,7 +21,7 @@ import java.util.*
 private val remove = SVG("/assets/${Constants.MOD_ID}/icons/trashcan.svg")
 private val copy = SVG("/assets/${Constants.MOD_ID}/icons/copy.svg")
 
-class PresetElement(val crosshair: CrosshairEntry) : BasicElement(149, 149, ColorPalette.SECONDARY, true) {
+class PresetElement(val canvaConfig: CanvaConfig, val crosshair: CrosshairEntry) : BasicElement(149, 149, ColorPalette.SECONDARY, true) {
     val removeButton = BasicButton(32, 32, remove, 2, ColorPalette.TERTIARY)
     val copyButton = BasicButton(32, 32, copy, 2, ColorPalette.TERTIARY)
     val bufferedImage = toBufferedImage(crosshair.img)
@@ -32,7 +30,7 @@ class PresetElement(val crosshair: CrosshairEntry) : BasicElement(149, 149, Colo
 
     init {
         removeButton.setClickAction {
-            Drawer.removeQueue.add(crosshair)
+            canvaConfig.drawer.removeQueue.add(crosshair)
         }
         copyButton.setClickAction {
             copy(bufferedImage)
@@ -40,7 +38,7 @@ class PresetElement(val crosshair: CrosshairEntry) : BasicElement(149, 149, Colo
     }
 
     override fun update(x: Float, y: Float, inputHandler: InputHandler) {
-        hovered = Drawer.inArea && inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
+        hovered = canvaConfig.drawer.inArea && inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
         pressed = hovered && Platform.getMousePlatform().isButtonDown(0)
         clicked = inputHandler.isClicked(false) && hovered
 
@@ -69,13 +67,13 @@ class PresetElement(val crosshair: CrosshairEntry) : BasicElement(149, 149, Colo
 
     fun onRemove() {
         File(Constants.CACHES_PATH + fileName + ".png").delete()
-        Drawer.elements.remove(crosshair)
+        canvaConfig.drawer.elements.remove(crosshair)
     }
 
     override fun onClick() {
         if (copyButton.isHovered) return
         if (removeButton.isHovered) return
-        Drawer.clear()
-        Drawer.loadImage(bufferedImage, false, crosshair)
+        canvaConfig.drawer.clear()
+        canvaConfig.drawer.loadImage(bufferedImage, false, crosshair)
     }
 }

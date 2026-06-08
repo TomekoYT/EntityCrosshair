@@ -1,6 +1,6 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.elements
+package tomeko.entitycrosshair.config.elements
 
 import cc.polyfrost.oneconfig.gui.OneConfigGui
 import cc.polyfrost.oneconfig.gui.elements.BasicElement
@@ -9,10 +9,9 @@ import cc.polyfrost.oneconfig.internal.assets.Images
 import cc.polyfrost.oneconfig.renderer.NanoVGHelper
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.dsl.renderTick
-import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import java.awt.Color
 
-class ColorSelector : BasicElement(64, 32, false) {
+class ColorSelector(val canvaConfig: CanvaConfig) : BasicElement(64, 32, false) {
     private val element = BasicElement(64, 32, false)
     private var colorSelector: ColorSelector? = null
     private var open = false
@@ -21,7 +20,7 @@ class ColorSelector : BasicElement(64, 32, false) {
         if (OneConfigGui.INSTANCE == null) return
         val nanoVGHelper = NanoVGHelper.INSTANCE
 
-        var color = EntityCrosshairConfig.penColor
+        var color = canvaConfig.penColor
 
         element.update(x, y, inputHandler)
         nanoVGHelper.drawHollowRoundRect(vg, x, y - 1, 64f, 32f, Color(73, 79, 92, 255).rgb, 12f, 2f)
@@ -38,7 +37,7 @@ class ColorSelector : BasicElement(64, 32, false) {
         }
         if (OneConfigGui.INSTANCE.currentColorSelector !== colorSelector) open = false
         else if (open) color = (OneConfigGui.INSTANCE.color)
-        EntityCrosshairConfig.penColor = color
+        canvaConfig.penColor = color
     }
 
 }

@@ -1,4 +1,4 @@
-package tomeko.entitycrosshair.config
+package tomeko.entitycrosshair.config.elements
 
 import cc.polyfrost.oneconfig.config.annotations.Button
 import cc.polyfrost.oneconfig.config.annotations.Slider
@@ -8,6 +8,7 @@ import cc.polyfrost.oneconfig.utils.dsl.runAsync
 import tomeko.entitycrosshair.utils.save
 
 class CrosshairEntry(
+    val canvaConfig: CanvaConfig,
     var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAEUlEQVR42mNgGAWjYBQMIgAAA5MAAecADfkAAAAASUVORK5CYII\u003d",
 ) {
 
@@ -29,10 +30,10 @@ class CrosshairEntry(
     @Button(name = "Transform", text = "Reset", size = 1)
     var transformReset = Runnable {
         runAsync {
-            val img = EntityCrosshairConfig.newCurrentCrosshair.img
-            EntityCrosshairConfig.newCurrentCrosshair.loadFrom(CrosshairEntry())
-            EntityCrosshairConfig.newCurrentCrosshair.img = img
-            save(Drawer.saveFromDrawer(false))
+            val img = canvaConfig.newCurrentCrosshair.img
+            canvaConfig.newCurrentCrosshair.loadFrom(CrosshairEntry(canvaConfig))
+            canvaConfig.newCurrentCrosshair.img = img
+            save(canvaConfig, canvaConfig.drawer.saveFromDrawer(false))
         }
     }
 

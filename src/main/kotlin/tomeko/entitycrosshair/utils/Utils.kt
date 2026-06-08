@@ -4,8 +4,8 @@ package tomeko.entitycrosshair.utils
 
 import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.utils.*
-import tomeko.entitycrosshair.config.CrosshairEntry
-import tomeko.entitycrosshair.config.EntityCrosshairConfig
+import tomeko.entitycrosshair.config.elements.CanvaConfig
+import tomeko.entitycrosshair.config.elements.CrosshairEntry
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
@@ -28,19 +28,19 @@ fun export(image: BufferedImage?, name: String): String {
     return path
 }
 
-fun save(image: OneImage?) {
+fun save(canvaConfig: CanvaConfig, image: OneImage?) {
     image ?: return
     val base64 = toBase64(image.image)
-    EntityCrosshairConfig.newCrosshairs.forEach {
+    canvaConfig.newCrosshairs.forEach {
         if (it.img == base64) {
-            it.loadFrom(EntityCrosshairConfig.newCurrentCrosshair)
+            it.loadFrom(canvaConfig.newCurrentCrosshair)
             return
         }
     }
-    val entry = CrosshairEntry()
-    entry.loadFrom(EntityCrosshairConfig.newCurrentCrosshair)
+    val entry = CrosshairEntry(canvaConfig)
+    entry.loadFrom(canvaConfig.newCurrentCrosshair)
     entry.img = base64
-    EntityCrosshairConfig.newCrosshairs.add(entry)
+    canvaConfig.newCrosshairs.add(entry)
 }
 
 fun toBufferedImage(string: String): BufferedImage? {

@@ -1,6 +1,6 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.config
+package tomeko.entitycrosshair.config.elements
 
 import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.config.elements.BasicOption
@@ -18,8 +18,6 @@ import cc.polyfrost.oneconfig.utils.color.ColorPalette
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import cc.polyfrost.oneconfig.utils.dsl.nanoVGHelper
 import cc.polyfrost.oneconfig.utils.dsl.runAsync
-import tomeko.entitycrosshair.elements.ColorSelector
-import tomeko.entitycrosshair.elements.PresetElement
 import tomeko.entitycrosshair.render.CrosshairRenderer
 import tomeko.entitycrosshair.utils.*
 import java.awt.Image
@@ -31,8 +29,8 @@ import javax.imageio.ImageIO
 import kotlin.collections.iterator
 import kotlin.math.ceil
 
-object Drawer : BasicOption(null, null, "", "", "", "", 2) {
-    val pixels: Array<Pixel> = Array(1024) { Pixel(it) }
+class Drawer(val canvaConfig: CanvaConfig) : BasicOption(null, null, "", "", "", "", 2) {
+    val pixels: Array<Pixel> = Array(1024) { Pixel(canvaConfig, it) }
 
     var elements = HashMap<CrosshairEntry, PresetElement>()
 
@@ -52,14 +50,14 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
 
     private val exportButton = BasicButton(64, 32, "Export", 2, ColorPalette.SECONDARY)
 
-    private val colorSelector = ColorSelector()
+    private val colorSelector = ColorSelector(canvaConfig)
 
     var inArea = false
 
     init {
-        tomeko.entitycrosshair.utils.toBufferedImage(EntityCrosshairConfig.newCurrentCrosshair.img)?.let { it ->
+        toBufferedImage(canvaConfig.newCurrentCrosshair.img)?.let { it ->
             if (it.width == 0 || it.height == 0) return@let
-            loadImage(it, false, EntityCrosshairConfig.newCurrentCrosshair)?.let {
+            loadImage(it, false, canvaConfig.newCurrentCrosshair)?.let {
                 CrosshairRenderer.updateTexture(it)
             }
         }
@@ -70,7 +68,7 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
         }
         saveButton.setClickAction {
             runAsync {
-                save(saveFromDrawer(false))
+                save(canvaConfig, saveFromDrawer(false))
             }
         }
         exportButton.setClickAction {
@@ -108,13 +106,13 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
     }
 
     override fun draw(vg: Long, x: Int, y: Int, inputHandler: InputHandler) {
-        for (posY in 0..<EntityCrosshairConfig.canvaSize) {
-            for (posX in 0..<EntityCrosshairConfig.canvaSize) {
+        for (posY in 0..<canvaConfig.canvaSize) {
+            for (posX in 0..<canvaConfig.canvaSize) {
                 pixels[posToIndex(posX, posY)].draw(vg, x.toFloat(), y.toFloat(), inputHandler)
             }
         }
 
-        if (EntityCrosshairConfig.canvaSize % 2 == 0) {
+        if (canvaConfig.canvaSize % 2 == 0) {
             nanoVGHelper.drawLine(
                 vg,
                 (x + 128).toFloat(),
@@ -142,14 +140,14 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
         exportButton.draw(vg, (x + 270).toFloat(), y.toFloat(), inputHandler)
 
         for (i in removeQueue) {
-            EntityCrosshairConfig.newCrosshairs.remove(i)
+            canvaConfig.newCrosshairs.remove(i)
             getElement(i).onRemove()
             elements.remove(i)
         }
 
         removeQueue.clear()
 
-        val height = (149 + 16) * ceil(EntityCrosshairConfig.newCrosshairs.size / 4f) - 16
+        val height = (149 + 16) * ceil(canvaConfig.newCrosshairs.size / 4f) - 16
 
         if (height <= 256) scrollAnimation = DummyAnimation(0f)
 
@@ -181,12 +179,12 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
             }
         }
 
-        val size = EntityCrosshairConfig.newCrosshairs.size
+        val size = canvaConfig.newCrosshairs.size
 
         for (i in 0..<size) {
             val posX = i % 4
             val posY = i / 4
-            getElement(EntityCrosshairConfig.newCrosshairs[i]).draw(
+            getElement(canvaConfig.newCrosshairs[i]).draw(
                 vg,
                 x + 349 + posX * 165f,
                 y + posY * 165f + scroll,
@@ -216,7 +214,7 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
         }
     }
 
-    fun loadImage(image: BufferedImage?, save: Boolean, entry: CrosshairEntry = CrosshairEntry()): OneImage? {
+    fun loadImage(image: BufferedImage?, save: Boolean, entry: CrosshairEntry = CrosshairEntry(canvaConfig)): OneImage? {
         val loadedImage = OneImage(image)
         val dimensionsSame = loadedImage.width == loadedImage.height
         val withinSize = loadedImage.width in 15..32
@@ -226,28 +224,28 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
             notify("$message (width: ${loadedImage.width} height: ${loadedImage.height}).")
             return null
         }
-        EntityCrosshairConfig.newCurrentCrosshair.loadFrom(entry)
-        EntityCrosshairConfig.canvaSize = loadedImage.height
-        for (posY in 0..<EntityCrosshairConfig.canvaSize) {
-            for (posX in 0..<EntityCrosshairConfig.canvaSize) {
+        canvaConfig.newCurrentCrosshair.loadFrom(entry)
+        canvaConfig.canvaSize = loadedImage.height
+        for (posY in 0..<canvaConfig.canvaSize) {
+            for (posX in 0..<canvaConfig.canvaSize) {
                 val c = loadedImage.image.getRGB(posX, posY)
                 pixels[posToIndex(posX, posY)].isToggled = c shr 24 != 0
                 pixels[posToIndex(posX, posY)].color = c
             }
         }
-        if (save) save(loadedImage)
+        if (save) save(canvaConfig, loadedImage)
         return loadedImage
     }
 
     fun saveFromDrawer(close: Boolean): OneImage? {
-        val image = OneImage(EntityCrosshairConfig.canvaSize, EntityCrosshairConfig.canvaSize)
-        if (EntityCrosshairConfig.drawer.isEmpty() && !close) {
+        val image = OneImage(canvaConfig.canvaSize, canvaConfig.canvaSize)
+        if (canvaConfig.drawerMap.isEmpty() && !close) {
             notify("Crosshair can't be empty.")
             return null
         }
-        for (i in EntityCrosshairConfig.drawer) {
+        for (i in canvaConfig.drawerMap) {
             val pos = indexToPos(i.key)
-            if (pos.x >= EntityCrosshairConfig.canvaSize || pos.y >= EntityCrosshairConfig.canvaSize) {
+            if (pos.x >= canvaConfig.canvaSize || pos.y >= canvaConfig.canvaSize) {
                 pixels[i.key].isToggled = false
                 continue
             }
@@ -258,13 +256,13 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
     }
 
     fun getElement(entry: CrosshairEntry): PresetElement {
-        elements[entry] ?: elements.put(entry, PresetElement(entry))
+        elements[entry] ?: elements.put(entry, PresetElement(canvaConfig, entry))
         return elements[entry]!!
     }
 
     override fun finishUpAndClose() {
         val image = saveFromDrawer(true) ?: return
-        EntityCrosshairConfig.newCurrentCrosshair.img = toBase64(image.image)
+        canvaConfig.newCurrentCrosshair.img = toBase64(image.image)
         CrosshairRenderer.updateTexture(image)
     }
 
@@ -274,7 +272,7 @@ object Drawer : BasicOption(null, null, "", "", "", "", 2) {
         if (mc.currentScreen !is OneConfigGui) return
         if (UKeyboard.isCtrlKeyDown() && keyCode == UKeyboard.KEY_S) {
             runAsync {
-                save(saveFromDrawer(false))
+                save(canvaConfig, saveFromDrawer(false))
             }
         }
     }
