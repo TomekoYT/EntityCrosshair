@@ -14,7 +14,7 @@ val minecraft_version: String by project
 plugins {
     idea
     java
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.4.0"
     id("gg.essential.loom") version "1.9.31"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.gradleup.shadow") version "9.4.1"
@@ -55,10 +55,17 @@ tasks.compileJava {
     dependsOn(tasks.processResources)
 }
 
-sourceSets.main {
-    output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
-    java.srcDir(layout.projectDirectory.dir("src/main/kotlin"))
-    kotlin.destinationDirectory.set(java.destinationDirectory)
+sourceSets {
+    val dummy by creating
+
+    main {
+        dummy.compileClasspath += compileClasspath
+        compileClasspath += dummy.output
+
+        output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
+        java.srcDir(layout.projectDirectory.dir("src/main/kotlin"))
+        kotlin.destinationDirectory.set(java.destinationDirectory)
+    }
 }
 
 repositories {
@@ -72,7 +79,7 @@ val shadowImpl: Configuration by configurations.creating {
 }
 
 dependencies {
-    shadowImpl(kotlin("stdlib-jdk8"))
+    shadowImpl(kotlin("stdlib-jdk${java_version}"))
 
     minecraft("com.mojang:minecraft:$minecraft_version")
     mappings("de.oceanlabs.mcp:mcp_stable:22-$minecraft_version")
