@@ -3,7 +3,6 @@ package tomeko.entitycrosshair.config.elements
 import cc.polyfrost.oneconfig.config.annotations.Button
 import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.annotations.Switch
-import cc.polyfrost.oneconfig.config.core.ConfigUtils
 import cc.polyfrost.oneconfig.utils.dsl.runAsync
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import tomeko.entitycrosshair.utils.saveEntity
@@ -41,10 +40,12 @@ class EntityCrosshairEntry(
     }
 
     fun loadFrom(entry: EntityCrosshairEntry) {
-        val newFields = ConfigUtils.getClassFields(entry::class.java)
-        val fields = ConfigUtils.getClassFields(this::class.java)
-        for (i in 0..<fields.size) {
-            fields[i].set(this, ConfigUtils.getField(newFields[i], entry))
-        }
+        this.img = entry.img
+        this.scale = entry.scale
+        this.rotation = entry.rotation
+        this.offsetX = entry.offsetX
+        this.offsetY = entry.offsetY
+        this.centered = entry.centered
+        this.transformReset = entry.transformReset
     }
 }

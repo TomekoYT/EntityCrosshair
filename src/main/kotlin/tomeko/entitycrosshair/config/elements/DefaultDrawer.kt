@@ -59,7 +59,7 @@ object DefaultDrawer : BasicOption(null, null, "", "", "", "", 2) {
         toBufferedImage(EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair.img)?.let { it ->
             if (it.width == 0 || it.height == 0) return@let
             loadImage(it, false, EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair)?.let {
-                CrosshairRenderer.updateTexture(it)
+                CrosshairRenderer.updateDefaultTexture(it)
             }
         }
         resetButton.setClickAction {
@@ -264,7 +264,7 @@ object DefaultDrawer : BasicOption(null, null, "", "", "", "", 2) {
     override fun finishUpAndClose() {
         val image = saveFromDrawer(true) ?: return
         EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair.img = toBase64(image.image)
-        CrosshairRenderer.updateTexture(image)
+        CrosshairRenderer.updateDefaultTexture(image)
     }
 
     override fun getHeight() = 256

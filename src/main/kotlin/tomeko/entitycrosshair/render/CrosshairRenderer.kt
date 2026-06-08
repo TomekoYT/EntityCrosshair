@@ -25,17 +25,31 @@ import net.minecraft.client.renderer.GlStateManager as GL
 
 object CrosshairRenderer {
     private var drawingImage = BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB)
-    private var texture = DynamicTexture(15, 15)
-    private var textureLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, texture)
+
+    var defaultTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(15, 15))
+    var entityTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", DynamicTexture(15, 15))
+
     private var whiteTexture = DynamicTexture(15, 15)
     private var whiteTextureLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, whiteTexture)
     private var vanilla = DynamicTexture(15, 15)
     private var vanillaLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, vanilla)
 
-    fun updateTexture(image: OneImage) {
+    // Split the update method into two target-specific functions
+    fun updateDefaultTexture(image: OneImage) {
         drawingImage = image.image
-        texture = DynamicTexture(drawingImage)
-        textureLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, texture)
+        val texture = DynamicTexture(drawingImage)
+        defaultTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", texture)
+        updateWhiteTexture()
+    }
+
+    fun updateEntityTexture(image: OneImage) {
+        drawingImage = image.image
+        val texture = DynamicTexture(drawingImage)
+        entityTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", texture)
+        updateWhiteTexture()
+    }
+
+    fun updateWhiteTexture() {
         whiteTexture = DynamicTexture(drawingImage.width, drawingImage.height)
         for (posY in 0..<drawingImage.height) {
             for (posX in 0..<drawingImage.width) {
@@ -80,7 +94,11 @@ object CrosshairRenderer {
 
             GL11.glColor4f(1f, 1f, 1f, 1f)
 
-            textureLocation.let { mc.textureManager.bindTexture(it) }
+            val useEntity = mc.objectMouseOver?.entityHit != null
+            val activeTexture = if (useEntity) entityTextureLocation else defaultTextureLocation
+
+            mc.textureManager.bindTexture(activeTexture)
+
             val mcScale = UResolution.scaleFactor.toFloat()
             GL.scale(1 / mcScale, 1 / mcScale, 1f)
             val crosshair = EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair
