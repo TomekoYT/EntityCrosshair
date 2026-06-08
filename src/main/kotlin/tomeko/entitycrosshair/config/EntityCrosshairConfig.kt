@@ -45,6 +45,7 @@ object EntityCrosshairConfig : Config(
 
     init {
         initialize()
+
         this.generateOptionList(defaultCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
         this.generateOptionList(defaultCanvaConfig, mod.defaultPage, this.mod, false)
         addListener("defaultCanvaConfig.canvaSize") {
@@ -55,6 +56,9 @@ object EntityCrosshairConfig : Config(
                 }
             }
         }
+
+        this.generateOptionList(entityCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
+        this.generateOptionList(entityCanvaConfig, mod.defaultPage, this.mod, false)
         addListener("entityCanvaConfig.canvaSize") {
             for (i in entityCanvaConfig.drawerMap) {
                 val pos = indexToPos(i.key)
