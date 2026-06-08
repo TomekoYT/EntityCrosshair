@@ -28,7 +28,7 @@ class DefaultCrosshairEntry(
         description = "In vanilla Minecraft, the crosshair is not centered. Enable this option to center the crosshair.",
         category = EntityCrosshairConfig.CATEGORY_DEFAULT
     )
-    var centered = false
+    var centered = true
 
     @Button(name = "Transform", text = "Reset", size = 1, category = EntityCrosshairConfig.CATEGORY_DEFAULT)
     var transformReset = Runnable {
