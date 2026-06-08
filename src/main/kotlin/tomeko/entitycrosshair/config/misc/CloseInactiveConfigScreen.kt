@@ -1,4 +1,4 @@
-package tomeko.entitycrosshair.config
+package tomeko.entitycrosshair.config.misc
 
 import net.minecraft.client.Minecraft
 import net.minecraftforge.common.MinecraftForge
