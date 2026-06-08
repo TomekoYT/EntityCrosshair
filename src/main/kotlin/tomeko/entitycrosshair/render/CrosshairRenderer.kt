@@ -26,8 +26,10 @@ import net.minecraft.client.renderer.GlStateManager as GL
 object CrosshairRenderer {
     private var drawingImage = BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB)
 
-    var defaultTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(15, 15))
-    var entityTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", DynamicTexture(15, 15))
+    var defaultTextureLocation =
+        mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(15, 15))
+    var entityTextureLocation =
+        mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", DynamicTexture(15, 15))
 
     private var whiteTexture = DynamicTexture(15, 15)
     private var whiteTextureLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, whiteTexture)
@@ -94,20 +96,20 @@ object CrosshairRenderer {
 
             GL11.glColor4f(1f, 1f, 1f, 1f)
 
-            val useEntity = mc.objectMouseOver?.entityHit != null
-            val activeTexture = if (useEntity) entityTextureLocation else defaultTextureLocation
+            val activeTexture = if (lookingAtEntity()) entityTextureLocation else defaultTextureLocation
 
             mc.textureManager.bindTexture(activeTexture)
 
             val mcScale = UResolution.scaleFactor.toFloat()
             GL.scale(1 / mcScale, 1 / mcScale, 1f)
-            val crosshair = EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair
+            val crosshair = if (lookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair else EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair
             GL.translate(crosshair.offsetX.toFloat(), crosshair.offsetY.toFloat(), 0f)
             GL.translate((UResolution.windowWidth / 2).toFloat(), (UResolution.windowHeight / 2).toFloat(), 0f)
             GL.rotate(crosshair.rotation.toFloat(), 0f, 0f, 1f)
+            val configSize = if (lookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.canvaSize else EntityCrosshairConfig.defaultCanvaConfig.canvaSize
             val scale = crosshair.scale / 100f
             val textureSize = 16
-            val autoScaledSize = if (EntityCrosshairConfig.defaultCanvaConfig.canvaSize % 2 == 0) 16 else 15
+            val autoScaledSize = if (configSize % 2 == 0) 16 else 15
             val size = ceil(autoScaledSize * mcScale * scale).toInt()
             val translation = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * mcScale * scale)
             GL.translate(translation, translation, 0f)
@@ -133,5 +135,10 @@ object CrosshairRenderer {
                 RenderGameOverlayEvent.ElementType.CROSSHAIRS
             )
         )
+    }
+
+    private fun lookingAtEntity(): Boolean {
+        val entity = mc.objectMouseOver?.entityHit ?: return false
+        return !entity.isInvisible
     }
 }
