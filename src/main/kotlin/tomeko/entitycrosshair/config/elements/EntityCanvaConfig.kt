@@ -10,9 +10,6 @@ class EntityCanvaConfig : CanvaConfig() {
     @Exclude
     override var drawerMap = HashMap<Int, Int>()
 
-    @Exclude
-    override var drawer = Drawer(this)
-
     @CustomOption(id = EntityCrosshairConfig.CATEGORY_ENTITY)
     override var newCrosshairs = arrayListOf(CrosshairEntry(this))
 
@@ -27,4 +24,7 @@ class EntityCanvaConfig : CanvaConfig() {
         get() = field.coerceIn(15, 32)
 
     override var newCurrentCrosshair = CrosshairEntry(this)
+
+    @Exclude
+    override var drawer = Drawer(this)
 }

@@ -1,14 +1,14 @@
 package tomeko.entitycrosshair.config.elements
 
 import cc.polyfrost.oneconfig.config.annotations.Button
+import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.annotations.Switch
-import cc.polyfrost.oneconfig.config.core.ConfigUtils
 import cc.polyfrost.oneconfig.utils.dsl.runAsync
 import tomeko.entitycrosshair.utils.save
 
 class CrosshairEntry(
-    val canvaConfig: CanvaConfig,
+    @field:Exclude val canvaConfig: CanvaConfig,
     var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAEUlEQVR42mNgGAWjYBQMIgAAA5MAAecADfkAAAAASUVORK5CYII\u003d",
 ) {
 
@@ -24,7 +24,10 @@ class CrosshairEntry(
     @Slider(name = "Y Offset", min = -1080f, max = 1080f)
     var offsetY = 0
 
-    @Switch(name = "Centered", description = "In vanilla Minecraft, the crosshair is not centered. Enable this option to center the crosshair.")
+    @Switch(
+        name = "Centered",
+        description = "In vanilla Minecraft, the crosshair is not centered. Enable this option to center the crosshair."
+    )
     var centered = false
 
     @Button(name = "Transform", text = "Reset", size = 1)
@@ -38,10 +41,11 @@ class CrosshairEntry(
     }
 
     fun loadFrom(entry: CrosshairEntry) {
-        val newFields = ConfigUtils.getClassFields(entry::class.java)
-        val fields = ConfigUtils.getClassFields(this::class.java)
-        for (i in 0..<fields.size) {
-            fields[i].set(this, ConfigUtils.getField(newFields[i], entry))
-        }
+        this.img = entry.img
+        this.scale = entry.scale
+        this.rotation = entry.rotation
+        this.offsetX = entry.offsetX
+        this.offsetY = entry.offsetY
+        this.centered = entry.centered
     }
 }
