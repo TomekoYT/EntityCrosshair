@@ -9,7 +9,7 @@ import org.lwjgl.opengl.Display
 object CloseInactiveConfigScreen {
     private val mc = Minecraft.getMinecraft()
 
-    init {
+    fun register() {
         MinecraftForge.EVENT_BUS.register(CloseInactiveConfigScreen)
     }
 
@@ -17,6 +17,6 @@ object CloseInactiveConfigScreen {
     fun onTick(event: TickEvent.ClientTickEvent) {
         if (Display.isActive() || mc.currentScreen == null || !mc.currentScreen::class.java.name.contains("oneconfig")) return
 
-        mc.displayGuiScreen(null)
+        mc.setIngameFocus()
     }
 }

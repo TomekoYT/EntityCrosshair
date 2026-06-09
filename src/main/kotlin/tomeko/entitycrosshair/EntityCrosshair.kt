@@ -23,7 +23,7 @@ object EntityCrosshair {
         clearCaches()
         Constants.CACHES_FILE.mkdirs()
 
-        CloseInactiveConfigScreen
+        CloseInactiveConfigScreen.register()
         EntityCrosshairConfig
 
         EventManager.INSTANCE.register(this)
