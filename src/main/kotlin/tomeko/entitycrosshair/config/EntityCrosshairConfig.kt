@@ -17,21 +17,6 @@ object EntityCrosshairConfig : Config(
     "${Constants.MOD_ID}/config.json"
 ) {
     @Exclude
-    private const val CATEGORY_GENERAL = "General"
-
-    @Switch(name = "Show in F3 (Debug)", category = CATEGORY_GENERAL)
-    var showInDebug = false
-
-    @Switch(name = "Show in GUIs", category = CATEGORY_GENERAL)
-    var showInGuis = true
-
-    @Switch(name = "Show in Third Person", category = CATEGORY_GENERAL)
-    var showInThirdPerson = true
-
-    @Switch(name = "Show in Spectator Mode", category = CATEGORY_GENERAL)
-    var showInSpectator = true
-
-    @Exclude
     const val CATEGORY_DEFAULT = "Default"
 
     var defaultCanvaConfig = DefaultCanvaConfig()
@@ -40,6 +25,11 @@ object EntityCrosshairConfig : Config(
     const val CATEGORY_ENTITY = "Entity"
 
     var entityCanvaConfig = EntityCanvaConfig()
+
+    @Exclude
+    const val CATEGORY_SETTINGS = "Settings"
+
+    var settingsConfig = SettingsConfig()
 
     init {
         initialize()
@@ -67,6 +57,8 @@ object EntityCrosshairConfig : Config(
                 }
             }
         }
+
+        this.generateOptionList(settingsConfig, mod.defaultPage, this.mod, false)
     }
 
     override fun getCustomOption(
@@ -80,6 +72,7 @@ object EntityCrosshairConfig : Config(
             CATEGORY_ENTITY -> {
                 ConfigUtils.getSubCategory(page, CATEGORY_ENTITY, "").options.add(EntityDrawer)
             }
+
             else -> {
                 ConfigUtils.getSubCategory(page, CATEGORY_DEFAULT, "").options.add(DefaultDrawer)
             }
