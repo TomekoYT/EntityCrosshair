@@ -24,7 +24,7 @@ object EntityCrosshair {
         Constants.CACHES_FILE.mkdirs()
 
         CloseInactiveConfigScreen.register()
-        EntityCrosshairConfig
+        EntityCrosshairConfig.register()
 
         EventManager.INSTANCE.register(this)
     }
@@ -35,7 +35,7 @@ object EntityCrosshair {
     }
 
     @Subscribe
-    fun onShutDown(e: ShutdownEvent) {
+    fun onShutDown(event: ShutdownEvent) {
         clearCaches()
     }
 

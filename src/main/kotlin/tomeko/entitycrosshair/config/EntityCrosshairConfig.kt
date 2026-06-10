@@ -31,7 +31,7 @@ object EntityCrosshairConfig : Config(
 
     var settingsConfig = SettingsConfig()
 
-    init {
+    fun register() {
         initialize()
 
         this.generateOptionList(defaultCanvaConfig, mod.defaultPage, this.mod, false)
