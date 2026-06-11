@@ -102,11 +102,11 @@ object CrosshairRenderer {
 
             val mcScale = UResolution.scaleFactor.toFloat()
             GL.scale(1 / mcScale, 1 / mcScale, 1f)
-            val crosshair = if (lookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair else EntityCrosshairConfig.defaultCanvaConfig.newCurrentCrosshair
+            val crosshair = if (lookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair else EntityCrosshairConfig.generalCanvaConfig.newCurrentCrosshair
             GL.translate(crosshair.offsetX.toFloat(), crosshair.offsetY.toFloat(), 0f)
             GL.translate((UResolution.windowWidth / 2).toFloat(), (UResolution.windowHeight / 2).toFloat(), 0f)
             GL.rotate(crosshair.rotation.toFloat(), 0f, 0f, 1f)
-            val configSize = if (lookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.canvaSize else EntityCrosshairConfig.defaultCanvaConfig.canvaSize
+            val configSize = if (lookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.canvaSize else EntityCrosshairConfig.generalCanvaConfig.canvaSize
             val scale = crosshair.scale / 100f
             val textureSize = 16
             val autoScaledSize = if (configSize % 2 == 0) 16 else 15

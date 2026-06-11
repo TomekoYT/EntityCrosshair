@@ -1,6 +1,6 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.config.elements
+package tomeko.entitycrosshair.config.elements.base
 
 import cc.polyfrost.oneconfig.gui.elements.BasicButton
 import cc.polyfrost.oneconfig.gui.elements.BasicElement
@@ -11,34 +11,35 @@ import cc.polyfrost.oneconfig.renderer.asset.SVG
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.color.ColorPalette
 import cc.polyfrost.oneconfig.utils.dsl.nanoVGHelper
-import tomeko.entitycrosshair.utils.Constants
-import tomeko.entitycrosshair.utils.copy
-import tomeko.entitycrosshair.utils.export
-import tomeko.entitycrosshair.utils.toBufferedImage
+import tomeko.entitycrosshair.utils.*
+import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
 
-private val remove = SVG("/assets/${Constants.MOD_ID}/icons/trashcan.svg")
-private val copy = SVG("/assets/${Constants.MOD_ID}/icons/copy.svg")
+private val removeIcon = SVG("/assets/${Constants.MOD_ID}/icons/trashcan.svg")
+private val copyIcon = SVG("/assets/${Constants.MOD_ID}/icons/copy.svg")
 
-class DefaultPresetElement(val crosshair: DefaultCrosshairEntry) : BasicElement(149, 149, ColorPalette.SECONDARY, true) {
-    val removeButton = BasicButton(32, 32, remove, 2, ColorPalette.TERTIARY)
-    val copyButton = BasicButton(32, 32, copy, 2, ColorPalette.TERTIARY)
+abstract class BasePresetElement(val crosshair: BaseCrosshairEntry) : BasicElement(149, 149, ColorPalette.SECONDARY, true) {
+    val removeButton = BasicButton(32, 32, removeIcon, 2, ColorPalette.TERTIARY)
+    val copyButton = BasicButton(32, 32, copyIcon, 2, ColorPalette.TERTIARY)
     val bufferedImage = toBufferedImage(crosshair.img)
     val fileName = UUID.randomUUID().toString()
     val image = Image(export(bufferedImage, fileName), AssetHelper.DEFAULT_FLAGS or 32)
 
+    // --- Abstract Config Hooks ---
+    abstract val drawerInArea: Boolean
+    abstract fun addToRemoveQueue()
+    abstract fun removeFromDrawerElements()
+    abstract fun clearDrawer()
+    abstract fun loadDrawerImage(img: BufferedImage?)
+
     init {
-        removeButton.setClickAction {
-            DefaultDrawer.removeQueue.add(crosshair)
-        }
-        copyButton.setClickAction {
-            copy(bufferedImage)
-        }
+        removeButton.setClickAction { addToRemoveQueue() }
+        copyButton.setClickAction { copy(bufferedImage) }
     }
 
     override fun update(x: Float, y: Float, inputHandler: InputHandler) {
-        hovered = DefaultDrawer.inArea && inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
+        hovered = drawerInArea && inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
         pressed = hovered && Platform.getMousePlatform().isButtonDown(0)
         clicked = inputHandler.isClicked(false) && hovered
 
@@ -67,13 +68,12 @@ class DefaultPresetElement(val crosshair: DefaultCrosshairEntry) : BasicElement(
 
     fun onRemove() {
         File(Constants.CACHES_PATH + fileName + ".png").delete()
-        DefaultDrawer.elements.remove(crosshair)
+        removeFromDrawerElements()
     }
 
     override fun onClick() {
-        if (copyButton.isHovered) return
-        if (removeButton.isHovered) return
-        DefaultDrawer.clear()
-        DefaultDrawer.loadImage(bufferedImage, false, crosshair)
+        if (copyButton.isHovered || removeButton.isHovered) return
+        clearDrawer()
+        loadDrawerImage(bufferedImage)
     }
 }

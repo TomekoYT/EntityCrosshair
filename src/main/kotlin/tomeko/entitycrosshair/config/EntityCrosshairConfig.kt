@@ -8,6 +8,10 @@ import cc.polyfrost.oneconfig.config.core.*
 import cc.polyfrost.oneconfig.config.data.*
 import cc.polyfrost.oneconfig.config.elements.*
 import tomeko.entitycrosshair.config.elements.*
+import tomeko.entitycrosshair.config.elements.entity.EntityCanvaConfig
+import tomeko.entitycrosshair.config.elements.entity.EntityDrawer
+import tomeko.entitycrosshair.config.elements.general.GeneralCanvaConfig
+import tomeko.entitycrosshair.config.elements.general.GeneralDrawer
 import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.indexToPos
 import java.lang.reflect.Field
@@ -17,9 +21,9 @@ object EntityCrosshairConfig : Config(
     "${Constants.MOD_ID}/config.json"
 ) {
     @Exclude
-    const val CATEGORY_DEFAULT = "Default"
+    const val CATEGORY_GENERAL = "General"
 
-    var defaultCanvaConfig = DefaultCanvaConfig()
+    var generalCanvaConfig = GeneralCanvaConfig()
 
     @Exclude
     const val CATEGORY_ENTITY = "Entity"
@@ -34,14 +38,14 @@ object EntityCrosshairConfig : Config(
     fun register() {
         initialize()
 
-        this.generateOptionList(defaultCanvaConfig, mod.defaultPage, this.mod, false)
-        this.generateOptionList(defaultCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
+        this.generateOptionList(generalCanvaConfig, mod.defaultPage, this.mod, false)
+        this.generateOptionList(generalCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
 
-        addListener("defaultCanvaConfig.canvaSize") {
-            for (i in defaultCanvaConfig.drawerMap) {
+        addListener("generalCanvaConfig.canvaSize") {
+            for (i in generalCanvaConfig.drawerMap) {
                 val pos = indexToPos(i.key)
-                if (pos.x >= defaultCanvaConfig.canvaSize || pos.y >= defaultCanvaConfig.canvaSize) {
-                    DefaultDrawer.pixels[i.key].isToggled = false
+                if (pos.x >= generalCanvaConfig.canvaSize || pos.y >= generalCanvaConfig.canvaSize) {
+                    GeneralDrawer.pixels[i.key].isToggled = false
                 }
             }
         }
@@ -74,7 +78,7 @@ object EntityCrosshairConfig : Config(
             }
 
             else -> {
-                ConfigUtils.getSubCategory(page, CATEGORY_DEFAULT, "").options.add(DefaultDrawer)
+                ConfigUtils.getSubCategory(page, CATEGORY_GENERAL, "").options.add(GeneralDrawer)
             }
         }
         return null

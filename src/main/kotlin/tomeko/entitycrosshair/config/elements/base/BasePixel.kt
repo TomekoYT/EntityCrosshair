@@ -1,6 +1,6 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.config.elements
+package tomeko.entitycrosshair.config.elements.base
 
 import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.gui.OneConfigGui
@@ -8,25 +8,28 @@ import cc.polyfrost.oneconfig.gui.elements.BasicElement
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.color.ColorPalette
 import cc.polyfrost.oneconfig.utils.dsl.nanoVGHelper
-import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import tomeko.entitycrosshair.utils.indexToPos
 
-class DefaultPixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRIMARY, true, 0f) {
+abstract class BasePixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRIMARY, true, 0f) {
     var backgroundColor = 0
     var posX = 0
     var posY = 0
+    var lastToggled = false
+
+    // --- Abstract Config Bridges ---
+    abstract val canvaSize: Int
+    abstract val penColorRgb: Int
+    abstract val drawerMap: HashMap<Int, Int>
 
     var color = -1
         set(value) {
             if (value shr 24 == 0) isToggled = false
-            EntityCrosshairConfig.defaultCanvaConfig.drawerMap[index] = value
+            drawerMap[index] = value
             field = value
         }
 
-    var lastToggled = false
-
     override fun draw(vg: Long, x: Float, y: Float, inputHandler: InputHandler) {
-        val size = (256 - (EntityCrosshairConfig.defaultCanvaConfig.canvaSize - 1)) / EntityCrosshairConfig.defaultCanvaConfig.canvaSize.toFloat()
+        val size = (256 - (canvaSize - 1)) / canvaSize.toFloat()
         posX = index % 32
         posY = index / 32
         val x1 = x + posX * (size + 1)
@@ -39,7 +42,8 @@ class DefaultPixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRIMARY, 
 
     override fun update(x: Float, y: Float, inputHandler: InputHandler) {
         val pos = indexToPos(index)
-        val size = EntityCrosshairConfig.defaultCanvaConfig.canvaSize
+        val size = canvaSize
+
         backgroundColor = if (size % 2 == 1 && pos.x == size / 2 && pos.x == pos.y) {
             OneColor("703A3AFF").rgb
         } else if ((pos.x + pos.y) % 2 == 0) {
@@ -47,23 +51,27 @@ class DefaultPixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRIMARY, 
         } else {
             ColorPalette.SECONDARY.hoveredColor
         }
+
         hovered = inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
+
         if (hovered && OneConfigGui.INSTANCE.currentColorSelector == null) {
             if (inputHandler.isMouseDown) {
-                set(true, EntityCrosshairConfig.defaultCanvaConfig.penColor.rgb)
+                set(true, penColorRgb)
             }
             if (inputHandler.isMouseDown(1)) {
                 set(false, color)
             }
         }
+
         if (lastToggled != isToggled) {
             lastToggled = isToggled
             if (isToggled) {
-                EntityCrosshairConfig.defaultCanvaConfig.drawerMap[index] = color
+                drawerMap[index] = color
             } else {
-                EntityCrosshairConfig.defaultCanvaConfig.drawerMap.remove(index)
+                drawerMap.remove(index)
             }
         }
+
         currentColor = if (isToggled) color else backgroundColor
     }
 

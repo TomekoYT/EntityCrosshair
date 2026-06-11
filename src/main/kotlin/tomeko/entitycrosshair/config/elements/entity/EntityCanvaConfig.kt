@@ -1,4 +1,4 @@
-package tomeko.entitycrosshair.config.elements
+package tomeko.entitycrosshair.config.elements.entity
 
 import cc.polyfrost.oneconfig.config.annotations.CustomOption
 import cc.polyfrost.oneconfig.config.annotations.Exclude

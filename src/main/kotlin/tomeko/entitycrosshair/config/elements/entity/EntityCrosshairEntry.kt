@@ -1,15 +1,16 @@
-package tomeko.entitycrosshair.config.elements
+package tomeko.entitycrosshair.config.elements.entity
 
 import cc.polyfrost.oneconfig.config.annotations.Button
 import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.annotations.Switch
 import cc.polyfrost.oneconfig.utils.dsl.runAsync
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
+import tomeko.entitycrosshair.config.elements.base.BaseCrosshairEntry
 import tomeko.entitycrosshair.utils.saveEntity
 
 class EntityCrosshairEntry(
-    var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAEUlEQVR42mNgGAWjYBQMIgAAA5MAAecADfkAAAAASUVORK5CYII\u003d",
-) : CrosshairEntry {
+    override var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAEUlEQVR42mNgGAWjYBQMIgAAA5MAAecADfkAAAAASUVORK5CYII\u003d",
+) : BaseCrosshairEntry {
     @Slider(name = "Scale %", min = 0f, max = 200f, category = EntityCrosshairConfig.CATEGORY_ENTITY)
     override var scale = 100
 
@@ -37,15 +38,5 @@ class EntityCrosshairEntry(
             EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair.img = img
             saveEntity(EntityDrawer.saveFromDrawer(false))
         }
-    }
-
-    fun loadFrom(entry: EntityCrosshairEntry) {
-        this.img = entry.img
-        this.scale = entry.scale
-        this.rotation = entry.rotation
-        this.offsetX = entry.offsetX
-        this.offsetY = entry.offsetY
-        this.centered = entry.centered
-        this.transformReset = entry.transformReset
     }
 }
