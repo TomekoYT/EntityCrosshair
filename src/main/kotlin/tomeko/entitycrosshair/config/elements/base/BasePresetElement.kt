@@ -26,7 +26,6 @@ abstract class BasePresetElement(val crosshair: BaseCrosshairEntry) : BasicEleme
     val fileName = UUID.randomUUID().toString()
     val image = Image(export(bufferedImage, fileName), AssetHelper.DEFAULT_FLAGS or 32)
 
-    // --- Abstract Config Hooks ---
     abstract val drawerInArea: Boolean
     abstract fun addToRemoveQueue()
     abstract fun removeFromDrawerElements()

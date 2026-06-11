@@ -1,3 +1,5 @@
+@file:Suppress("UnstableAPIUsage")
+
 package tomeko.entitycrosshair.config.elements.general
 
 import cc.polyfrost.oneconfig.images.OneImage

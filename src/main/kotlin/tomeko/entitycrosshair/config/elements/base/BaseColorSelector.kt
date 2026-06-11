@@ -17,7 +17,6 @@ abstract class BaseColorSelector : BasicElement(64, 32, false) {
     private var colorSelector: ColorSelector? = null
     private var open = false
 
-    // --- Abstract Property Bridge ---
     abstract var targetPenColor: OneColor
 
     override fun draw(vg: Long, x: Float, y: Float, inputHandler: InputHandler) {

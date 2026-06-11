@@ -29,19 +29,16 @@ import kotlin.collections.iterator
 import kotlin.math.ceil
 
 abstract class BaseDrawer : BasicOption(null, null, "", "", "", "", 2) {
-    // Shared UI state
     private var scroll = 0f
     private var scrollTarget = 0f
     private var scrollAnimation: Animation = DummyAnimation(0f)
     var inArea = false
 
-    // Shared UI Controls
     protected val resetButton = BasicButton(64, 32, "Reset", 2, ColorPalette.PRIMARY_DESTRUCTIVE)
     protected val saveButton = BasicButton(64, 32, "Save", 2, ColorPalette.PRIMARY)
     protected val importButton = BasicButton(64, 32, "Import", 2, ColorPalette.SECONDARY)
     protected val exportButton = BasicButton(64, 32, "Export", 2, ColorPalette.SECONDARY)
 
-    // --- Abstract Hooks implemented by Concrete Drawers ---
     abstract var currentCanvaSize: Int
     abstract val drawerMap: HashMap<Int, Int>
     abstract val currentCrosshair: BaseCrosshairEntry
@@ -60,9 +57,6 @@ abstract class BaseDrawer : BasicOption(null, null, "", "", "", "", 2) {
     abstract fun saveAction(image: OneImage?)
     abstract fun updateTextureAction(image: OneImage)
 
-    /**
-     * Call this inside the concrete object init blocks to bind identical click behaviors.
-     */
     protected fun initDrawer() {
         toBufferedImage(currentCrosshair.img)?.let { img ->
             if (img.width == 0 || img.height == 0) return@let

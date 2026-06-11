@@ -16,7 +16,6 @@ abstract class BasePixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRI
     var posY = 0
     var lastToggled = false
 
-    // --- Abstract Config Bridges ---
     abstract val canvaSize: Int
     abstract val penColorRgb: Int
     abstract val drawerMap: HashMap<Int, Int>
