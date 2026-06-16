@@ -7,7 +7,6 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import tomeko.entitycrosshair.config.*
-import tomeko.entitycrosshair.config.misc.CloseInactiveConfigScreen
 import tomeko.entitycrosshair.render.*
 import tomeko.entitycrosshair.utils.*
 
@@ -23,7 +22,6 @@ object EntityCrosshair {
         clearCaches()
         Constants.CACHES_FILE.mkdirs()
 
-        CloseInactiveConfigScreen.register()
         EntityCrosshairConfig.register()
 
         EventManager.INSTANCE.register(this)
