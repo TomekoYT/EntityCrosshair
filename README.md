@@ -20,19 +20,19 @@ Fully customizable, centered, colored, dynamic crosshair that changes when looki
 ## Features
 
 ### General Crosshair
-- draw any crosshair you want
-- change color, scale, rotation, position
-- supports multiple colors at once
-- centered crosshair toggle
-- supports saving/loading different crosshair layouts
+- Draw any crosshair you want
+- Change color, scale, rotation, position
+- Supports multiple colors at once
+- Centered crosshair toggle
+- Supports saving/loading different crosshair layouts
 
 ### Entity Crosshair
-- shows instead of General Crosshair when looking at an entity
-- draw any crosshair you want
-- change color, scale, rotation, position
-- supports multiple colors at once
-- centered crosshair toggle
-- supports saving/loading different crosshair layouts
+- Shows instead of General Crosshair when looking at an entity
+- Draw any crosshair you want
+- Change color, scale, rotation, position
+- Supports multiple colors at once
+- Centered crosshair toggle
+- Supports saving/loading different crosshair layouts
 
 ### Settings
 - Show in F3 (Debug)
