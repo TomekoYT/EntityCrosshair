@@ -37,6 +37,10 @@ class EntityCrosshair {
 
     @Subscribe
     fun onShutDown(event: ShutdownEvent) {
+        GeneralDrawer.flush()
+        EntityDrawer.flush()
+        EntityCrosshairConfig.save()
+
         clearCaches()
     }
 

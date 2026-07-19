@@ -9,7 +9,7 @@ import tomeko.entitycrosshair.config.base.CrosshairEntry
 import tomeko.entitycrosshair.config.base.EntityDrawer
 
 class EntityCrosshairEntry(
-    override var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAEUlEQVR42mNgGAWjYBQMIgAAA5MAAecADfkAAAAASUVORK5CYII\u003d",
+    override var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAALklEQVR42mNgGH7gPxCQrAGmCZkmyiBkRbjYtPEjPmfT3nay/UxRaFMUz0MDAAARS2Od/Bu+BgAAAABJRU5ErkJggg==",
 ) : CrosshairEntry {
     @Slider(name = "Scale %", min = 0f, max = 200f, category = EntityCrosshairConfig.CATEGORY_ENTITY)
     override var scale = 100

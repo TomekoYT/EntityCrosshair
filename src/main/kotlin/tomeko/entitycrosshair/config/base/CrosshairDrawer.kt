@@ -57,14 +57,33 @@ class CrosshairDrawer<T : CrosshairEntry>(
 
     private val currentCrosshair get() = canvaConfig.newCurrentCrosshair
 
+    private var lastSyncedSnapshot: Map<Int, Int>? = null
+
+    private fun applyToCurrent(image: OneImage) {
+        currentCrosshair.img = toBase64(image.image)
+        updateTextureAction(image)
+        lastSyncedSnapshot = HashMap(canvaConfig.drawerMap)
+    }
+
+    private fun syncIfChanged() {
+        if (canvaConfig.drawerMap == lastSyncedSnapshot) return
+        saveFromDrawer(true)?.let { applyToCurrent(it) }
+    }
+
     init {
         toBufferedImage(currentCrosshair.img)?.let { img ->
             if (img.width != 0 && img.height != 0) {
-                loadImage(img, false, currentCrosshair)?.let { updateTextureAction(it) }
+                loadImage(img, false, currentCrosshair)
             }
         }
         resetButton.setClickAction { runAsync { clear() } }
-        saveButton.setClickAction { runAsync { saveAction(saveFromDrawer(false)) } }
+        saveButton.setClickAction {
+            runAsync {
+                val image = saveFromDrawer(false) ?: return@runAsync
+                saveAction(image)
+                applyToCurrent(image)
+            }
+        }
         exportButton.setClickAction { runAsync { saveFromDrawer(false)?.let { copyToClipboard(it.image) } } }
         importButton.setClickAction {
             runAsync {
@@ -114,6 +133,8 @@ class CrosshairDrawer<T : CrosshairEntry>(
                 pixels[positionToIndex(posX, posY)].draw(vg, x.toFloat(), y.toFloat(), inputHandler)
             }
         }
+
+        syncIfChanged()
 
         if (size % 2 == 0) {
             nanoVGHelper.drawLine(vg, (x + 128).toFloat(), (y + 108).toFloat(), (x + 128).toFloat(), (y + 148).toFloat(), 1f, OneColor("703A3AFF").rgb)
@@ -183,6 +204,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
             }
         }
         if (save) saveAction(loadedImage)
+        applyToCurrent(loadedImage)
         return loadedImage
     }
 
@@ -204,18 +226,23 @@ class CrosshairDrawer<T : CrosshairEntry>(
         return image
     }
 
-    override fun finishUpAndClose() {
+    fun flush() {
         val image = saveFromDrawer(true) ?: return
-        currentCrosshair.img = toBase64(image.image)
-        updateTextureAction(image)
+        applyToCurrent(image)
     }
+
+    override fun finishUpAndClose() = flush()
 
     override fun getHeight() = 256
 
     override fun keyTyped(key: Char, keyCode: Int) {
         if (mc.currentScreen !is OneConfigGui) return
         if (UKeyboard.isCtrlKeyDown() && keyCode == UKeyboard.KEY_S) {
-            runAsync { saveAction(saveFromDrawer(false)) }
+            runAsync {
+                val image = saveFromDrawer(false) ?: return@runAsync
+                saveAction(image)
+                applyToCurrent(image)
+            }
         }
     }
 }
