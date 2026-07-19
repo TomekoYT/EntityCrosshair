@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,7 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,18 +34,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.polyfrost.oneconfig.api.config.v1.Property
 import org.polyfrost.oneconfig.api.config.v1.Visualizer
 import org.polyfrost.oneconfig.api.config.v1.annotations.Option
+import tomeko.entitycrosshair.config.CrosshairRenderer.toPngBytes
 import tomeko.entitycrosshair.utils.copyToClipboard
 import tomeko.entitycrosshair.utils.getImageFromClipboard
 import tomeko.entitycrosshair.utils.toBase64
@@ -73,15 +75,6 @@ class CrosshairEditorVisualizer : Visualizer {
         var penColor by remember(prop.id) { mutableStateOf(Color.White) }
         var canvasSize by remember(prop.id) { mutableStateOf(setData.canvasSize.coerceIn(15, 32)) }
 
-        fun persist(newSetData: CrosshairSetData) {
-            setData = newSetData
-
-            @Suppress("UNCHECKED_CAST")
-            (prop as Property<Any>).set(newSetData.encode())
-
-            if (entityMode) EntityCrosshairConfig.onEntityChanged(newSetData) else EntityCrosshairConfig.onGeneralChanged(newSetData)
-        }
-
         fun renderPixelsToImage(size: Int): BufferedImage {
             val img = BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB)
             for (y in 0 until size) {
@@ -90,6 +83,20 @@ class CrosshairEditorVisualizer : Visualizer {
                 }
             }
             return img
+        }
+
+        LaunchedEffect(prop.id, pixels.value, canvasSize) {
+            val pngBytes = renderPixelsToImage(canvasSize).toPngBytes()
+            if (entityMode) CrosshairRenderer.updateEntityTexture(pngBytes) else CrosshairRenderer.updateDefaultTexture(pngBytes)
+        }
+
+        fun persist(newSetData: CrosshairSetData) {
+            setData = newSetData
+
+            @Suppress("UNCHECKED_CAST")
+            (prop as Property<Any>).set(newSetData.encode())
+
+            if (entityMode) EntityCrosshairConfig.onEntityChanged(newSetData) else EntityCrosshairConfig.onGeneralChanged(newSetData)
         }
 
         fun saveCurrent() {
@@ -123,14 +130,6 @@ class CrosshairEditorVisualizer : Visualizer {
         }
 
         Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-            Text(
-                text = if (entityMode) "Entity crosshair" else "Default crosshair",
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
                 Text("Canvas size: $canvasSize", color = Color.White, modifier = Modifier.width(140.dp))
                 Slider(
@@ -233,10 +232,10 @@ class CrosshairEditorVisualizer : Visualizer {
             Spacer(modifier = Modifier.height(12.dp))
             Text("Saved presets (click to load):", color = Color.White, modifier = Modifier.padding(bottom = 4.dp))
 
-            LazyVerticalGrid(columns = GridCells.Fixed(6), modifier = Modifier.height(160.dp)) {
+            LazyVerticalGrid(columns = GridCells.Fixed(4), modifier = Modifier.height(260.dp)) {
                 items(setData.presets) { preset ->
                     Column(
-                        modifier = Modifier.padding(4.dp).pointerInput(preset) {
+                        modifier = Modifier.padding(6.dp).pointerInput(preset) {
                             detectTapGestures {
                                 setData = setData.copy(current = preset.copy())
                                 pixels.value = loadPixelsFromBase64(preset.img)
@@ -249,7 +248,10 @@ class CrosshairEditorVisualizer : Visualizer {
                             androidx.compose.foundation.Image(
                                 bitmap = bmp,
                                 contentDescription = null,
-                                modifier = Modifier.size(32.dp),
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .background(Color(0xFF2E323C)),
+                                filterQuality = FilterQuality.None,
                             )
                         }
                         Button(
@@ -257,14 +259,42 @@ class CrosshairEditorVisualizer : Visualizer {
                                 persist(setData.copy(presets = setData.presets.filterNot { it === preset }.toMutableList()))
                             },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFD32F2F)),
-                            modifier = Modifier.padding(top = 2.dp),
+                            contentPadding = PaddingValues(6.dp),
+                            modifier = Modifier.padding(top = 4.dp),
                         ) {
-                            Text("x", color = Color.White, fontSize = 10.sp)
+                            TrashIcon(modifier = Modifier.size(14.dp), color = Color.White)
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun TrashIcon(modifier: Modifier = Modifier, color: Color = Color.White) {
+    Canvas(modifier = modifier) {
+        val w = size.width
+        val h = size.height
+        val strokeW = (w * 0.1f).coerceAtLeast(1f)
+        val lidY = h * 0.24f
+        val bodyTop = h * 0.34f
+        val bodyBottom = h * 0.86f
+        val bodyLeft = h * 0.24f
+        val bodyRight = w - bodyLeft
+
+
+        drawLine(color, Offset(w * 0.12f, lidY), Offset(w * 0.88f, lidY), strokeWidth = strokeW)
+
+        drawLine(color, Offset(w * 0.36f, lidY), Offset(w * 0.40f, h * 0.08f), strokeWidth = strokeW)
+        drawLine(color, Offset(w * 0.64f, lidY), Offset(w * 0.60f, h * 0.08f), strokeWidth = strokeW)
+        drawLine(color, Offset(w * 0.40f, h * 0.08f), Offset(w * 0.60f, h * 0.08f), strokeWidth = strokeW)
+
+        drawLine(color, Offset(bodyLeft, bodyTop), Offset(w * 0.30f, bodyBottom), strokeWidth = strokeW)
+        drawLine(color, Offset(bodyRight, bodyTop), Offset(w * 0.70f, bodyBottom), strokeWidth = strokeW)
+        drawLine(color, Offset(w * 0.30f, bodyBottom), Offset(w * 0.70f, bodyBottom), strokeWidth = strokeW)
+
+        drawLine(color, Offset(w * 0.5f, bodyTop + strokeW), Offset(w * 0.5f, bodyBottom - strokeW), strokeWidth = strokeW * 0.8f)
     }
 }
 

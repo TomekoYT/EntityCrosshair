@@ -67,7 +67,11 @@ fun toBase64(image: BufferedImage): String {
 
 //? if >= 26.1 {
 fun getImageFromClipboard(): BufferedImage? {
-    val contents: Transferable = Toolkit.getDefaultToolkit().systemClipboard.getContents(null) ?: return null
+    val contents: Transferable = try {
+        Toolkit.getDefaultToolkit().systemClipboard.getContents(null) ?: return null
+    } catch (_: Exception) {
+        return null
+    }
 
     try {
         if (contents.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
@@ -105,7 +109,11 @@ fun copyToClipboard(image: Image?) {
             return image
         }
     }
-    Toolkit.getDefaultToolkit().systemClipboard.setContents(transferable, null)
-    Notifications.send(Constants.MOD_NAME, "Crosshair has been copied to clipboard.")
+    try {
+        Toolkit.getDefaultToolkit().systemClipboard.setContents(transferable, null)
+        Notifications.send(Constants.MOD_NAME, "Crosshair has been copied to clipboard.")
+    } catch (e: Exception) {
+        Notifications.send(Constants.MOD_NAME, "Failed to copy crosshair to clipboard: ${e.message}")
+    }
     //?}
 }

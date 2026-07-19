@@ -216,17 +216,17 @@ object CrosshairRenderer {
     private fun shouldShow(): Boolean {
         val player = mc.player ?: return false
         val debugScreenShowing =
-            //? if >= 26.2 {
-            /*mc.gui.hud.debugOverlay.showDebugScreen()
-            *///?} else {
+        //? if >= 26.2 {
+                /*mc.gui.hud.debugOverlay.showDebugScreen()
+                *///?} else {
             mc.gui.debugOverlay.showDebugScreen()
-            //?}
+        //?}
         val screen =
-            //? if >= 26.2 {
-            /*mc.gui.screen()
-            *///?} else {
+        //? if >= 26.2 {
+                /*mc.gui.screen()
+                *///?} else {
             mc.screen
-            //?}
+        //?}
 
         if (!EntityCrosshairConfig.showInGuis && screen != null) return false
         if (!EntityCrosshairConfig.showInThirdPerson && !mc.options.cameraType.isFirstPerson) return false
@@ -254,15 +254,15 @@ object CrosshairRenderer {
 
         val entityMode = lookingAtEntity()
         val crosshair = if (entityMode) EntityCrosshairConfig.entitySet.current else EntityCrosshairConfig.generalSet.current
-        val configSize = if (entityMode) EntityCrosshairConfig.entitySet.canvasSize else EntityCrosshairConfig.generalSet.canvasSize
         val textureLocation = (if (entityMode) entityTextureLocation else defaultTextureLocation) ?: return
         val textureSize = if (entityMode) entityTextureSize else defaultTextureSize
+        if (textureSize <= 0) return
 
         val window = mc.window
-        val scaleFactor = window.guiScale.toFloat()
         val scale = crosshair.scale / 100f
-        val autoScaledSize = if (configSize % 2 == 0) 16 else 15
+        val autoScaledSize = if (textureSize % 2 == 0) 16 else 15
         val size = ceil(autoScaledSize * scale).toInt().coerceAtLeast(1)
+        val textureScale = size.toFloat() / textureSize
         val translationX = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * scale)
         val translationY = translationX
 
@@ -274,8 +274,9 @@ object CrosshairRenderer {
         )
         pose.rotate(crosshair.rotation.toFloat())
         pose.translate(translationX, translationY)
+        pose.scale(textureScale, textureScale)
 
-        drawTexture(guiGraphics, textureLocation, 0, 0, size, size, textureSize, textureSize)
+        drawTexture(guiGraphics, textureLocation, 0, 0, textureSize, textureSize, textureSize, textureSize)
 
         pose.popMatrix()
     }
