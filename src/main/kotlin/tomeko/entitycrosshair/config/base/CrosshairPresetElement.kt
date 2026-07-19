@@ -2,7 +2,8 @@
 
 package tomeko.entitycrosshair.config.base
 
-import cc.polyfrost.oneconfig.gui.elements.BasicButton
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.gui.elements.BasicButton
 import cc.polyfrost.oneconfig.gui.elements.BasicElement
 import cc.polyfrost.oneconfig.platform.Platform
 import cc.polyfrost.oneconfig.renderer.asset.AssetHelper
@@ -75,3 +76,4 @@ class CrosshairPresetElement<T : CrosshairEntry>(
         drawer.loadImage(bufferedImage, false, crosshair)
     }
 }
+*///?}

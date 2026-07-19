@@ -1,6 +1,7 @@
 package tomeko.entitycrosshair.config.base
 
-interface CrosshairEntry {
+//? if = 1.8.9 {
+/*interface CrosshairEntry {
     var img: String
     var scale: Int
     var rotation: Int
@@ -17,3 +18,4 @@ interface CrosshairEntry {
         this.centered = entry.centered
     }
 }
+*///?}

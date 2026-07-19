@@ -1,8 +1,9 @@
 package tomeko.entitycrosshair.mixins;
 
-import net.minecraft.client.renderer.EntityRenderer;
+//? if = 1.8.9 {
+/*import net.minecraft.client.renderer.EntityRenderer;
 import tomeko.entitycrosshair.config.EntityCrosshairConfig;
-import tomeko.entitycrosshair.config.base.CrosshairRenderer;
+import tomeko.entitycrosshair.config.CrosshairRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,3 +16,4 @@ public abstract class EntityRendererMixin {
         if (EntityCrosshairConfig.INSTANCE.enabled) CrosshairRenderer.INSTANCE.drawCrosshair((EntityRenderer) (Object) this);
     }
 }
+*///?}

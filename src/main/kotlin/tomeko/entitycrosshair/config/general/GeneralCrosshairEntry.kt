@@ -1,6 +1,7 @@
 package tomeko.entitycrosshair.config.general
 
-import cc.polyfrost.oneconfig.config.annotations.Button
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.config.annotations.Button
 import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.annotations.Switch
 import cc.polyfrost.oneconfig.utils.dsl.runAsync
@@ -41,3 +42,4 @@ class GeneralCrosshairEntry(
         }
     }
 }
+*///?}

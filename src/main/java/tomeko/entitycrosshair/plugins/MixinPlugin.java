@@ -1,11 +1,11 @@
 package tomeko.entitycrosshair.plugins;
 
 //? if = 1.8.9 {
-import org.spongepowered.asm.lib.tree.ClassNode;
-//?} else {
-/*import com.llamalad7.mixinextras.MixinExtrasBootstrap;
+/*import org.spongepowered.asm.lib.tree.ClassNode;
+*///?} else {
+import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import org.objectweb.asm.tree.ClassNode;
-*///?}
+//?}
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -36,7 +36,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         //? if >= 26.1 {
-        //MixinExtrasBootstrap.init();
+        MixinExtrasBootstrap.init();
         //?}
         this.mixinPackage = mixinPackage;
         mixinPlugins.add(this);

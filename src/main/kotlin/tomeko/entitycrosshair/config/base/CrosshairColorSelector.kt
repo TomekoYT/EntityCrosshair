@@ -2,7 +2,8 @@
 
 package tomeko.entitycrosshair.config.base
 
-import cc.polyfrost.oneconfig.gui.OneConfigGui
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.gui.OneConfigGui
 import cc.polyfrost.oneconfig.gui.elements.BasicElement
 import cc.polyfrost.oneconfig.gui.elements.ColorSelector
 import cc.polyfrost.oneconfig.internal.assets.Images
@@ -47,3 +48,4 @@ class CrosshairColorSelector<T : CrosshairEntry>(
         canvaConfig.penColor = color
     }
 }
+*///?}

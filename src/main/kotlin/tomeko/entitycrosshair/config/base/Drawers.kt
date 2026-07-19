@@ -2,7 +2,9 @@
 
 package tomeko.entitycrosshair.config.base
 
-import cc.polyfrost.oneconfig.images.OneImage
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.images.OneImage
+import tomeko.entitycrosshair.config.CrosshairRenderer
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import tomeko.entitycrosshair.config.entity.EntityCrosshairEntry
 import tomeko.entitycrosshair.config.general.GeneralCrosshairEntry
@@ -36,3 +38,4 @@ fun <T : CrosshairEntry> saveCrosshair(canvaConfig: CanvaConfig<T>, entryFactory
     entry.img = base64
     canvaConfig.newCrosshairs.add(entry)
 }
+*///?}

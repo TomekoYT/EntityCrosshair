@@ -1,6 +1,7 @@
 package tomeko.entitycrosshair.mixins;
 
-import net.minecraft.client.Minecraft;
+//? if = 1.8.9 {
+/*import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
@@ -23,3 +24,4 @@ public class GuiIngameMixin {
         }
     }
 }
+*///?}

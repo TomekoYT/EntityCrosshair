@@ -1,6 +1,10 @@
 package tomeko.entitycrosshair.utils
 
-import cc.polyfrost.oneconfig.config.core.ConfigUtils
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.config.core.ConfigUtils
+*///?} else {
+import net.fabricmc.loader.api.FabricLoader
+//?}
 import java.io.File
 
 object Constants {
@@ -8,6 +12,12 @@ object Constants {
     const val MOD_ID = "@MOD_ID@"
     const val MOD_VERSION = "@MOD_VERSION@"
 
-    val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${MOD_ID}/caches/"
+    //? if = 1.8.9 {
+    /*val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${MOD_ID}/caches/"
     val CACHES_FILE = File(CACHES_PATH)
+    *///?} else {
+    val CONFIG_DIR: File = FabricLoader.getInstance().configDir.resolve(MOD_ID).toFile()
+    val CACHES_FILE: File = File(CONFIG_DIR, "caches")
+    val CACHES_PATH: String = CACHES_FILE.absolutePath + File.separator
+    //?}
 }

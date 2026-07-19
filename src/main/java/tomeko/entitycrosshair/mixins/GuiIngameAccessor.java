@@ -1,6 +1,7 @@
 package tomeko.entitycrosshair.mixins;
 
-import net.minecraft.client.gui.GuiIngame;
+//? if = 1.8.9 {
+/*import net.minecraft.client.gui.GuiIngame;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -9,3 +10,4 @@ public interface GuiIngameAccessor {
     @Invoker("showCrosshair")
     boolean shouldShowCrosshair();
 }
+*///?}

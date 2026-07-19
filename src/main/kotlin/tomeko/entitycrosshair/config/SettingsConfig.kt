@@ -1,6 +1,7 @@
 package tomeko.entitycrosshair.config
 
-import cc.polyfrost.oneconfig.config.annotations.Switch
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.config.annotations.Switch
 
 class SettingsConfig {
     @Switch(name = "Show in F3 (Debug)", category = EntityCrosshairConfig.CATEGORY_SETTINGS)
@@ -15,3 +16,4 @@ class SettingsConfig {
     @Switch(name = "Show in Spectator Mode", category = EntityCrosshairConfig.CATEGORY_SETTINGS)
     var showInSpectator = true
 }
+*///?}

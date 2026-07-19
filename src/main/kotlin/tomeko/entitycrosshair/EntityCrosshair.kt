@@ -1,36 +1,73 @@
 package tomeko.entitycrosshair
 
-import cc.polyfrost.oneconfig.events.EventManager
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.events.EventManager
 import cc.polyfrost.oneconfig.events.event.ShutdownEvent
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
+*///?} else {
+import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
+//?}
 import tomeko.entitycrosshair.commands.*
 import tomeko.entitycrosshair.config.*
-import tomeko.entitycrosshair.config.base.*
+//? if = 1.8.9 {
+/*import tomeko.entitycrosshair.config.base.*
+*///?}
 import tomeko.entitycrosshair.utils.*
 
-@Mod(
+//? if = 1.8.9 {
+/*@Mod(
     name = Constants.MOD_NAME,
     modid = Constants.MOD_ID,
     version = Constants.MOD_VERSION,
     modLanguageAdapter = "cc.polyfrost.oneconfig.utils.KotlinLanguageAdapter"
 )
-class EntityCrosshair {
-    @Mod.EventHandler
-    fun onInitializeClient(event: FMLInitializationEvent) {
-        clearCaches()
+*///?}
+class EntityCrosshair
+//? if >= 26.1 {
+    : ClientModInitializer
+//?}
+{
+    //? if = 1.8.9 {
+    /*@Mod.EventHandler
+    *///?} else {
+    override
+    //?}
+    fun onInitializeClient(
+        //? if = 1.8.9 {
+        /*event: FMLInitializationEvent
+        *///?}
+    ) {
+        //? if = 1.8.9 {
+        /*clearCaches()
+        *///?} else {
+        Constants.CACHES_FILE.deleteRecursively()
+        //?}
         Constants.CACHES_FILE.mkdirs()
+
+        //? if = 1.8.9 {
+        /*EventManager.INSTANCE.register(this)
+        *///?}
 
         EntityCrosshairCommand.register()
 
+        //? if >= 26.1 {
+        CrosshairRenderer.register()
+        //?}
         EntityCrosshairConfig.register()
 
-        EventManager.INSTANCE.register(this)
+        //? if >= 26.1 {
+        ClientLifecycleEvents.CLIENT_STOPPING.register {
+            Constants.CACHES_FILE.deleteRecursively()
+        }
+        //?}
     }
 
-    @Mod.EventHandler
+    //? if = 1.8.9 {
+    /*@Mod.EventHandler
     fun onPostInitializeClient(event: FMLPostInitializationEvent) {
         CrosshairRenderer.updateVanilla()
     }
@@ -52,4 +89,5 @@ class EntityCrosshair {
         }
         Constants.CACHES_FILE.delete()
     }
+    *///?}
 }

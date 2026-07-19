@@ -1,6 +1,7 @@
 package tomeko.entitycrosshair.mixins;
 
-import net.minecraft.client.renderer.GlStateManager;
+//? if = 1.8.9 {
+/*import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.GuiIngameForge;
 import tomeko.entitycrosshair.config.EntityCrosshairConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,3 +19,4 @@ public class GuiIngameForgeMixin {
         }
     }
 }
+*///?}

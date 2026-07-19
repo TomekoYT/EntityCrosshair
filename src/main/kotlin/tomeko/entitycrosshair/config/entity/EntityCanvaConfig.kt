@@ -1,6 +1,7 @@
 package tomeko.entitycrosshair.config.entity
 
-import cc.polyfrost.oneconfig.config.annotations.CustomOption
+//? if = 1.8.9 {
+/*import cc.polyfrost.oneconfig.config.annotations.CustomOption
 import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.core.OneColor
@@ -26,3 +27,4 @@ class EntityCanvaConfig : CanvaConfig<EntityCrosshairEntry> {
 
     override var newCurrentCrosshair = EntityCrosshairEntry()
 }
+*///?}
