@@ -11,7 +11,7 @@ import tomeko.entitycrosshair.config.elements.SettingsConfig;
 @Mixin(GuiIngame.class)
 public class GuiIngameMixin {
     @Inject(method = "showCrosshair", at = @At("HEAD"), cancellable = true)
-    private void check(CallbackInfoReturnable<Boolean> cir) {
+    private void entitycrosshair$check(CallbackInfoReturnable<Boolean> cir) {
         SettingsConfig cfg = EntityCrosshairConfig.INSTANCE.getSettingsConfig();
         Minecraft mc = Minecraft.getMinecraft();
         if (!EntityCrosshairConfig.INSTANCE.enabled) return;

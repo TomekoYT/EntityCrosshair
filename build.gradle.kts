@@ -1,20 +1,20 @@
 import org.apache.commons.lang3.SystemUtils
 import dev.architectury.pack200.java.Pack200Adapter
 
-val mod_name: String by project
-val mod_id: String by project
-val mod_version: String by project
-val mod_description: String by project
-val mod_archives_name: String by project
-val base_group: String by project
+val modName = project.property("mod_name") as String
+val modId = project.property("mod_id") as String
+val modVersion = project.property("mod_version") as String
+val modDescription = project.property("mod_description") as String
+val modArchivesName = project.property("mod_archives_name") as String
+val baseGroup = project.property("base_group") as String
 
-val java_version: String by project
-val minecraft_version: String by project
+val javaVersion = project.property("java_version") as String
+val minecraftVersion = project.property("minecraft_version") as String
 
 plugins {
     idea
     java
-    kotlin("jvm") version "2.4.0"
+    kotlin("jvm") version "2.4.10"
     id("gg.essential.loom") version "1.9.31"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.gradleup.shadow") version "9.4.1"
@@ -22,7 +22,7 @@ plugins {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(java_version))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion))
 }
 
 loom {
@@ -43,11 +43,7 @@ loom {
     }
     forge {
         pack200Provider.set(Pack200Adapter())
-        mixinConfig("mixins.$mod_id.json")
-    }
-
-    mixin {
-        defaultRefmapName.set("mixins.$mod_id.refmap.json")
+        mixinConfig("mixins.$modId.json")
     }
 }
 
@@ -74,16 +70,17 @@ repositories {
     maven("https://repo.polyfrost.cc/releases")
 }
 
-val shadowImpl: Configuration by configurations.creating {
-    configurations.implementation.get().extendsFrom(this)
+val shadowImpl = configurations.create("shadowImpl")
+configurations.named("implementation") {
+    extendsFrom(shadowImpl)
 }
 
 dependencies {
-    shadowImpl(kotlin("stdlib-jdk${java_version}"))
+    minecraft("com.mojang:minecraft:$minecraftVersion")
+    mappings("de.oceanlabs.mcp:mcp_stable:22-$minecraftVersion")
+    forge("net.minecraftforge:forge:$minecraftVersion-11.15.1.2318-$minecraftVersion")
 
-    minecraft("com.mojang:minecraft:$minecraft_version")
-    mappings("de.oceanlabs.mcp:mcp_stable:22-$minecraft_version")
-    forge("net.minecraftforge:forge:$minecraft_version-11.15.1.2318-$minecraft_version")
+    shadowImpl(kotlin("stdlib-jdk8"))
 
     annotationProcessor("org.ow2.asm:asm-debug-all:5.2")
     annotationProcessor("com.google.guava:guava:32.1.2-jre")
@@ -94,29 +91,30 @@ dependencies {
         isTransitive = false
     }
 
-    compileOnly("cc.polyfrost:oneconfig-$minecraft_version-forge:0.2.2-alpha+")
+    compileOnly("cc.polyfrost:oneconfig-$minecraftVersion-forge:0.2.2-alpha+")
     shadowImpl("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
 }
 
 bloom {
-    replacement("@MOD_NAME@", mod_name)
-    replacement("@MOD_ID@", mod_id)
-    replacement("@MOD_VERSION@", mod_version)
+    replacement("@MOD_NAME@", modName)
+    replacement("@MOD_ID@", modId)
+    replacement("@MOD_VERSION@", modVersion)
 }
 
 tasks.withType(JavaCompile::class) {
-    options.encoding = "UTF-$java_version"
+    options.encoding = "UTF-$javaVersion"
 }
 
 tasks.withType(org.gradle.jvm.tasks.Jar::class) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    archiveBaseName.set("$mod_archives_name-$mod_version-${minecraft_version}_forge")
+
+    archiveBaseName.set("$modArchivesName-$modVersion-${minecraftVersion}_forge")
     manifest.attributes.run {
         this["FMLCorePluginContainsFMLMod"] = "true"
         this["ForceLoadAsMod"] = "true"
 
         this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-        this["MixinConfigs"] = "mixins.$mod_id.json"
+        this["MixinConfigs"] = "mixins.$modId.json"
     }
 }
 
@@ -124,27 +122,28 @@ tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     val props = mapOf(
-        "mod_id" to mod_id,
-        "mod_name" to mod_name,
-        "mod_version" to mod_version,
-        "mod_description" to mod_description,
-        "base_group" to base_group,
+        "mod_id" to modId,
+        "mod_name" to modName,
+        "mod_version" to modVersion,
+        "mod_description" to modDescription,
+        "base_group" to baseGroup,
 
-        "java_version" to java_version,
-        "minecraft_version" to minecraft_version,
+        "java_version" to javaVersion,
+        "minecraft_version" to minecraftVersion
     )
 
     inputs.properties(props)
 
-    filesMatching(listOf("mcmod.info", "mixins.$mod_id.json")) {
+    filesMatching(listOf("mcmod.info", "mixins.$modId.json")) {
         expand(props)
     }
 }
 
-val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
+val shadowJar = tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar")
+val remapJar = tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
     archiveClassifier.set("")
-    from(tasks.shadowJar)
-    input.set(tasks.shadowJar.get().archiveFile)
+    from(shadowJar)
+    inputFile.set(shadowJar.flatMap { it.archiveFile })
 }
 
 tasks.jar {
