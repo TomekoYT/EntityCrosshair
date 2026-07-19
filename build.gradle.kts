@@ -1,5 +1,4 @@
-import org.apache.commons.lang3.SystemUtils
-import dev.architectury.pack200.java.Pack200Adapter
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val modName = project.property("mod_name") as String
 val modId = project.property("mod_id") as String
@@ -10,89 +9,48 @@ val baseGroup = project.property("base_group") as String
 
 val javaVersion = project.property("java_version") as String
 val minecraftVersion = project.property("minecraft_version") as String
+val fabricLoaderVersion = project.property("fabric_loader_version") as String
+val fabricApiVersion = project.property("fabric_api_version") as String
+val fabricLanguageKotlinVersion = project.property("fabric_language_kotlin_version") as String
+
+val oneconfigVersion = project.property("oneconfig_version") as String
+val modMenuVersion = project.property("mod_menu_version") as String
 
 plugins {
-    idea
-    java
-    kotlin("jvm") version "2.4.10"
-    id("gg.essential.loom") version "1.9.31"
-    id("dev.architectury.architectury-pack200") version "0.1.3"
-    id("com.gradleup.shadow") version "9.4.1"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
+    id("org.jetbrains.kotlin.jvm") version "2.4.10"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
     id("dev.deftu.gradle.bloom") version "0.2.0"
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(javaVersion))
-}
-
-loom {
-    runs {
-        getByName("client") {
-            property("mixin.debug", "true")
-            programArgs("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-            programArgs("--tweakClass", "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker")
-        }
-    }
-    runConfigs {
-        getByName("client") {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                vmArgs.remove("-XstartOnFirstThread")
-            }
-        }
-        remove(getByName("server"))
-    }
-    forge {
-        pack200Provider.set(Pack200Adapter())
-        mixinConfig("mixins.$modId.json")
-    }
-}
-
-tasks.compileJava {
-    dependsOn(tasks.processResources)
-}
-
-sourceSets {
-    val dummy by creating
-
-    main {
-        dummy.compileClasspath += compileClasspath
-        compileClasspath += dummy.output
-
-        output.setResourcesDir(sourceSets.main.flatMap { it.java.classesDirectory })
-        java.srcDir(layout.projectDirectory.dir("src/main/kotlin"))
-        kotlin.destinationDirectory.set(java.destinationDirectory)
-    }
+base {
+    archivesName.set("$modArchivesName-$modVersion-$minecraftVersion+_fabric")
 }
 
 repositories {
     mavenCentral()
-    maven("https://repo.spongepowered.org/maven/")
-    maven("https://repo.polyfrost.cc/releases")
+    google()
+
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.stellardrift.ca/repository/maven-snapshots/")
+    maven("https://repo.polyfrost.org/releases")
+    maven("https://repo.polyfrost.org/snapshots")
+    maven("https://maven.terraformersmc.com/")
 }
 
-val shadowImpl = configurations.create("shadowImpl")
-configurations.named("implementation") {
-    extendsFrom(shadowImpl)
+loom {
+    runConfigs.remove(runConfigs["server"])
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("de.oceanlabs.mcp:mcp_stable:22-$minecraftVersion")
-    forge("net.minecraftforge:forge:$minecraftVersion-11.15.1.2318-$minecraftVersion")
+    implementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+    implementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+    implementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 
-    shadowImpl(kotlin("stdlib-jdk8"))
-
-    annotationProcessor("org.ow2.asm:asm-debug-all:5.2")
-    annotationProcessor("com.google.guava:guava:32.1.2-jre")
-    annotationProcessor("com.google.code.gson:gson:2.8.9")
-
-    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
-    shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
-        isTransitive = false
-    }
-
-    compileOnly("cc.polyfrost:oneconfig-$minecraftVersion-forge:0.2.2-alpha+")
-    shadowImpl("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
+    implementation("org.polyfrost.oneconfig:$minecraftVersion-fabric:$oneconfigVersion")
+    implementation("com.terraformersmc:modmenu:$modMenuVersion")
+    testImplementation(kotlin("test"))
 }
 
 bloom {
@@ -101,68 +59,56 @@ bloom {
     replacement("@MOD_VERSION@", modVersion)
 }
 
-tasks.withType(JavaCompile::class) {
-    options.encoding = "UTF-$javaVersion"
-}
-
-tasks.withType(org.gradle.jvm.tasks.Jar::class) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    archiveBaseName.set("$modArchivesName-$modVersion-${minecraftVersion}_forge")
-    manifest.attributes.run {
-        this["FMLCorePluginContainsFMLMod"] = "true"
-        this["ForceLoadAsMod"] = "true"
-
-        this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
-        this["MixinConfigs"] = "mixins.$modId.json"
-    }
-}
-
 tasks.processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
     val props = mapOf(
         "mod_id" to modId,
         "mod_name" to modName,
         "mod_version" to modVersion,
         "mod_description" to modDescription,
+        "mod_archives_name" to modArchivesName,
         "base_group" to baseGroup,
 
         "java_version" to javaVersion,
-        "minecraft_version" to minecraftVersion
+        "minecraft_version" to minecraftVersion,
+        "fabric_loader_version" to fabricLoaderVersion,
+        "fabric_api_version" to fabricApiVersion,
+        "fabric_language_kotlin_version" to fabricLanguageKotlinVersion,
+
+        "oneconfig_version" to oneconfigVersion,
+        "mod_menu_version" to modMenuVersion
     )
 
     inputs.properties(props)
 
-    filesMatching(listOf("mcmod.info", "mixins.$modId.json")) {
+    filesMatching(listOf("fabric.mod.json", "mixins.$modId.json")) {
         expand(props)
     }
 }
 
-val shadowJar = tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar")
-val remapJar = tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
-    archiveClassifier.set("")
-    from(shadowJar)
-    inputFile.set(shadowJar.flatMap { it.archiveFile })
+tasks.withType<JavaCompile>().configureEach {
+    options.release = javaVersion.toInt()
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.toVersion(javaVersion)
+    targetCompatibility = JavaVersion.toVersion(javaVersion)
+
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(javaVersion))
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget(javaVersion)
+    }
 }
 
 tasks.jar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    archiveClassifier.set("without-deps")
-    destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
-    manifest.attributes += mapOf(
-        "ModSide" to "CLIENT",
-        "TweakOrder" to 0,
-        "ForceLoadAsMod" to true,
-        "TweakClass" to "cc.polyfrost.oneconfig.loader.stage0.LaunchWrapperTweaker"
-    )
-}
+    inputs.property("archivesName", base.archivesName)
 
-tasks.shadowJar {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
-    archiveClassifier.set("non-obfuscated-with-deps")
-    configurations = listOf(shadowImpl)
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName.get()}" }
+    }
 }
-
-tasks.assemble.get().dependsOn(tasks.remapJar)
