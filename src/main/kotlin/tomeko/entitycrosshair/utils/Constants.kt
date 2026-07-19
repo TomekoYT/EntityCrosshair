@@ -8,6 +8,6 @@ object Constants {
     const val MOD_ID = "@MOD_ID@"
     const val MOD_VERSION = "@MOD_VERSION@"
 
-    val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${Constants.MOD_ID}/caches/"
+    val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${MOD_ID}/caches/"
     val CACHES_FILE = File(CACHES_PATH)
 }

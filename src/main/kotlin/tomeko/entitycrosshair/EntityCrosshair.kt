@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import tomeko.entitycrosshair.commands.*
 import tomeko.entitycrosshair.config.*
-import tomeko.entitycrosshair.render.*
+import tomeko.entitycrosshair.config.base.*
 import tomeko.entitycrosshair.utils.*
 
 @Mod(
@@ -17,7 +17,7 @@ import tomeko.entitycrosshair.utils.*
     version = Constants.MOD_VERSION,
     modLanguageAdapter = "cc.polyfrost.oneconfig.utils.KotlinLanguageAdapter"
 )
-object EntityCrosshair {
+class EntityCrosshair {
     @Mod.EventHandler
     fun onInitializeClient(event: FMLInitializationEvent) {
         clearCaches()

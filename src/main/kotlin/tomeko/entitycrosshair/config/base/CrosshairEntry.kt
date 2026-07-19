@@ -1,6 +1,6 @@
-package tomeko.entitycrosshair.config.elements.base
+package tomeko.entitycrosshair.config.base
 
-interface BaseCrosshairEntry {
+interface CrosshairEntry {
     var img: String
     var scale: Int
     var rotation: Int
@@ -8,7 +8,7 @@ interface BaseCrosshairEntry {
     var offsetY: Int
     var centered: Boolean
 
-    fun loadFrom(entry: BaseCrosshairEntry) {
+    fun loadFrom(entry: CrosshairEntry) {
         this.img = entry.img
         this.scale = entry.scale
         this.rotation = entry.rotation

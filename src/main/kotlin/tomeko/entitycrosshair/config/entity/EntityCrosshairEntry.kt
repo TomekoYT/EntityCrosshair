@@ -1,16 +1,16 @@
-package tomeko.entitycrosshair.config.elements.entity
+package tomeko.entitycrosshair.config.entity
 
 import cc.polyfrost.oneconfig.config.annotations.Button
 import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.annotations.Switch
 import cc.polyfrost.oneconfig.utils.dsl.runAsync
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
-import tomeko.entitycrosshair.config.elements.base.BaseCrosshairEntry
-import tomeko.entitycrosshair.utils.saveEntity
+import tomeko.entitycrosshair.config.base.CrosshairEntry
+import tomeko.entitycrosshair.config.base.EntityDrawer
 
 class EntityCrosshairEntry(
     override var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAEUlEQVR42mNgGAWjYBQMIgAAA5MAAecADfkAAAAASUVORK5CYII\u003d",
-) : BaseCrosshairEntry {
+) : CrosshairEntry {
     @Slider(name = "Scale %", min = 0f, max = 200f, category = EntityCrosshairConfig.CATEGORY_ENTITY)
     override var scale = 100
 
@@ -33,10 +33,11 @@ class EntityCrosshairEntry(
     @Button(name = "Transform", text = "Reset", size = 1, category = EntityCrosshairConfig.CATEGORY_ENTITY)
     var transformReset = Runnable {
         runAsync {
-            val img = EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair.img
-            EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair.loadFrom(EntityCrosshairEntry())
-            EntityCrosshairConfig.entityCanvaConfig.newCurrentCrosshair.img = img
-            saveEntity(EntityDrawer.saveFromDrawer(false))
+            val canvaConfig = EntityCrosshairConfig.entityCanvaConfig
+            val img = canvaConfig.newCurrentCrosshair.img
+            canvaConfig.newCurrentCrosshair.loadFrom(EntityCrosshairEntry())
+            canvaConfig.newCurrentCrosshair.img = img
+            EntityDrawer.saveCurrent()
         }
     }
 }

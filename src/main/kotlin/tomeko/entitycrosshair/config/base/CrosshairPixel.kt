@@ -1,6 +1,6 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.config.elements.base
+package tomeko.entitycrosshair.config.base
 
 import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.gui.OneConfigGui
@@ -8,17 +8,19 @@ import cc.polyfrost.oneconfig.gui.elements.BasicElement
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.color.ColorPalette
 import cc.polyfrost.oneconfig.utils.dsl.nanoVGHelper
-import tomeko.entitycrosshair.utils.indexToPos
+import tomeko.entitycrosshair.utils.indexToPosition
 
-abstract class BasePixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRIMARY, true, 0f) {
+class CrosshairPixel<T : CrosshairEntry>(
+    val index: Int,
+    private val canvaConfig: CanvaConfig<T>,
+) : BasicElement(16, 16, ColorPalette.PRIMARY, true, 0f) {
     var backgroundColor = 0
     var posX = 0
     var posY = 0
     var lastToggled = false
 
-    abstract val canvaSize: Int
-    abstract val penColorRgb: Int
-    abstract val drawerMap: HashMap<Int, Int>
+    private val canvaSize get() = canvaConfig.canvaSize
+    private val drawerMap get() = canvaConfig.drawerMap
 
     var color = -1
         set(value) {
@@ -40,7 +42,7 @@ abstract class BasePixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRI
     }
 
     override fun update(x: Float, y: Float, inputHandler: InputHandler) {
-        val pos = indexToPos(index)
+        val pos = indexToPosition(index)
         val size = canvaSize
 
         backgroundColor = if (size % 2 == 1 && pos.x == size / 2 && pos.x == pos.y) {
@@ -55,7 +57,7 @@ abstract class BasePixel(val index: Int) : BasicElement(16, 16, ColorPalette.PRI
 
         if (hovered && OneConfigGui.INSTANCE.currentColorSelector == null) {
             if (inputHandler.isMouseDown) {
-                set(true, penColorRgb)
+                set(true, canvaConfig.penColor.rgb)
             }
             if (inputHandler.isMouseDown(1)) {
                 set(false, color)

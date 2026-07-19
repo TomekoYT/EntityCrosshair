@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tomeko.entitycrosshair.config.EntityCrosshairConfig;
-import tomeko.entitycrosshair.config.elements.SettingsConfig;
+import tomeko.entitycrosshair.config.SettingsConfig;
 
 @Mixin(GuiIngame.class)
 public class GuiIngameMixin {

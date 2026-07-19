@@ -7,13 +7,15 @@ import cc.polyfrost.oneconfig.config.annotations.*
 import cc.polyfrost.oneconfig.config.core.*
 import cc.polyfrost.oneconfig.config.data.*
 import cc.polyfrost.oneconfig.config.elements.*
-import tomeko.entitycrosshair.config.elements.*
-import tomeko.entitycrosshair.config.elements.entity.EntityCanvaConfig
-import tomeko.entitycrosshair.config.elements.entity.EntityDrawer
-import tomeko.entitycrosshair.config.elements.general.GeneralCanvaConfig
-import tomeko.entitycrosshair.config.elements.general.GeneralDrawer
+import tomeko.entitycrosshair.config.base.CanvaConfig
+import tomeko.entitycrosshair.config.base.CrosshairDrawer
+import tomeko.entitycrosshair.config.base.CrosshairEntry
+import tomeko.entitycrosshair.config.base.EntityDrawer
+import tomeko.entitycrosshair.config.base.GeneralDrawer
+import tomeko.entitycrosshair.config.entity.EntityCanvaConfig
+import tomeko.entitycrosshair.config.general.GeneralCanvaConfig
 import tomeko.entitycrosshair.utils.Constants
-import tomeko.entitycrosshair.utils.indexToPos
+import tomeko.entitycrosshair.utils.indexToPosition
 import java.lang.reflect.Field
 
 object EntityCrosshairConfig : Config(
@@ -40,29 +42,22 @@ object EntityCrosshairConfig : Config(
 
         this.generateOptionList(generalCanvaConfig, mod.defaultPage, this.mod, false)
         this.generateOptionList(generalCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
-
-        addListener("generalCanvaConfig.canvaSize") {
-            for (i in generalCanvaConfig.drawerMap) {
-                val pos = indexToPos(i.key)
-                if (pos.x >= generalCanvaConfig.canvaSize || pos.y >= generalCanvaConfig.canvaSize) {
-                    GeneralDrawer.pixels[i.key].isToggled = false
-                }
-            }
-        }
+        addListener("generalCanvaConfig.canvaSize") { clampOutOfBoundsPixels(generalCanvaConfig, GeneralDrawer) }
 
         this.generateOptionList(entityCanvaConfig, mod.defaultPage, this.mod, false)
         this.generateOptionList(entityCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
-
-        addListener("entityCanvaConfig.canvaSize") {
-            for (i in entityCanvaConfig.drawerMap) {
-                val pos = indexToPos(i.key)
-                if (pos.x >= entityCanvaConfig.canvaSize || pos.y >= entityCanvaConfig.canvaSize) {
-                    EntityDrawer.pixels[i.key].isToggled = false
-                }
-            }
-        }
+        addListener("entityCanvaConfig.canvaSize") { clampOutOfBoundsPixels(entityCanvaConfig, EntityDrawer) }
 
         this.generateOptionList(settingsConfig, mod.defaultPage, this.mod, false)
+    }
+
+    private fun <T : CrosshairEntry> clampOutOfBoundsPixels(canvaConfig: CanvaConfig<T>, drawer: CrosshairDrawer<T>) {
+        for ((key) in canvaConfig.drawerMap) {
+            val pos = indexToPosition(key)
+            if (pos.x >= canvaConfig.canvaSize || pos.y >= canvaConfig.canvaSize) {
+                drawer.pixels[key].isToggled = false
+            }
+        }
     }
 
     override fun getCustomOption(
@@ -76,7 +71,6 @@ object EntityCrosshairConfig : Config(
             CATEGORY_ENTITY -> {
                 ConfigUtils.getSubCategory(page, CATEGORY_ENTITY, "").options.add(EntityDrawer)
             }
-
             else -> {
                 ConfigUtils.getSubCategory(page, CATEGORY_GENERAL, "").options.add(GeneralDrawer)
             }

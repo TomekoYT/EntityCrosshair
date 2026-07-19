@@ -2,7 +2,7 @@ package tomeko.entitycrosshair.mixins;
 
 import net.minecraft.client.renderer.EntityRenderer;
 import tomeko.entitycrosshair.config.EntityCrosshairConfig;
-import tomeko.entitycrosshair.render.CrosshairRenderer;
+import tomeko.entitycrosshair.config.base.CrosshairRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

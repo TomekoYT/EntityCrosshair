@@ -1,7 +1,6 @@
-package tomeko.entitycrosshair.config.elements
+package tomeko.entitycrosshair.config
 
 import cc.polyfrost.oneconfig.config.annotations.Switch
-import tomeko.entitycrosshair.config.EntityCrosshairConfig
 
 class SettingsConfig {
     @Switch(name = "Show in F3 (Debug)", category = EntityCrosshairConfig.CATEGORY_SETTINGS)

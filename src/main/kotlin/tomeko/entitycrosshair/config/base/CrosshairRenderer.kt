@@ -1,6 +1,6 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.render
+package tomeko.entitycrosshair.config.base
 
 import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.libs.universal.UResolution
@@ -10,6 +10,7 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.EntityRenderer
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.client.renderer.texture.TextureUtil
+import net.minecraft.util.ResourceLocation
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.TextureStitchEvent
 import net.minecraftforge.common.MinecraftForge
@@ -26,9 +27,9 @@ import net.minecraft.client.renderer.GlStateManager as GL
 object CrosshairRenderer {
     private var drawingImage = BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB)
 
-    var defaultTextureLocation =
+    var defaultTextureLocation: ResourceLocation? =
         mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(15, 15))
-    var entityTextureLocation =
+    var entityTextureLocation: ResourceLocation? =
         mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", DynamicTexture(15, 15))
 
     private var whiteTexture = DynamicTexture(15, 15)
@@ -36,7 +37,6 @@ object CrosshairRenderer {
     private var vanilla = DynamicTexture(15, 15)
     private var vanillaLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, vanilla)
 
-    // Split the update method into two target-specific functions
     fun updateDefaultTexture(image: OneImage) {
         drawingImage = image.image
         val texture = DynamicTexture(drawingImage)

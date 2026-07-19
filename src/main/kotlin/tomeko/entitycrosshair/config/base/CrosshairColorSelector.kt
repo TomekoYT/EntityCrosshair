@@ -1,8 +1,7 @@
 @file:Suppress("UnstableAPIUsage")
 
-package tomeko.entitycrosshair.config.elements.base
+package tomeko.entitycrosshair.config.base
 
-import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.gui.OneConfigGui
 import cc.polyfrost.oneconfig.gui.elements.BasicElement
 import cc.polyfrost.oneconfig.gui.elements.ColorSelector
@@ -12,18 +11,18 @@ import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.dsl.renderTick
 import java.awt.Color
 
-abstract class BaseColorSelector : BasicElement(64, 32, false) {
+class CrosshairColorSelector<T : CrosshairEntry>(
+    private val canvaConfig: CanvaConfig<T>,
+) : BasicElement(64, 32, false) {
     private val element = BasicElement(64, 32, false)
     private var colorSelector: ColorSelector? = null
     private var open = false
-
-    abstract var targetPenColor: OneColor
 
     override fun draw(vg: Long, x: Float, y: Float, inputHandler: InputHandler) {
         if (OneConfigGui.INSTANCE == null) return
         val nanoVGHelper = NanoVGHelper.INSTANCE
 
-        var color = targetPenColor
+        var color = canvaConfig.penColor
 
         element.update(x, y, inputHandler)
         nanoVGHelper.drawHollowRoundRect(vg, x, y - 1, 64f, 32f, Color(73, 79, 92, 255).rgb, 12f, 2f)
@@ -45,6 +44,6 @@ abstract class BaseColorSelector : BasicElement(64, 32, false) {
             color = OneConfigGui.INSTANCE.color
         }
 
-        targetPenColor = color
+        canvaConfig.penColor = color
     }
 }
