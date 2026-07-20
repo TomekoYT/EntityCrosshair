@@ -115,7 +115,7 @@ object EntityCrosshairConfig : Config(
     @Slider(
         title = "Scale",
         min = 0f,
-        max = 200f,
+        max = 1000f,
         step = 1f,
         category = CATEGORY_GENERAL
     )
