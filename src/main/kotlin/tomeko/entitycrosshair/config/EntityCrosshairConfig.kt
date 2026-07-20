@@ -19,7 +19,7 @@ import tomeko.entitycrosshair.config.entity.EntityCanvaConfig
 import tomeko.entitycrosshair.config.general.GeneralCanvaConfig
 *///?} else {
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import org.polyfrost.compose.render.PolyColor
@@ -33,6 +33,7 @@ import tomeko.entitycrosshair.utils.Constants
 import java.lang.reflect.Field
 *///?} else {
 import tomeko.entitycrosshair.utils.toBufferedImage
+
 //?}
 
 object EntityCrosshairConfig : Config(
@@ -70,6 +71,16 @@ object EntityCrosshairConfig : Config(
         generalSet = CrosshairSetData.decode(generalCrosshairJson, DefaultCrosshairs.GENERAL)
         entitySet = CrosshairSetData.decode(entityCrosshairJson, DefaultCrosshairs.ENTITY)
         pushTextures()
+
+        addCallback<Boolean>("generalEraserEnabled") {
+            generalEraserEnabledState = it
+            false
+        }
+
+        addCallback<Boolean>("entityEraserEnabled") {
+            entityEraserEnabledState = it
+            false
+        }
         //?}
     }
 
@@ -107,6 +118,15 @@ object EntityCrosshairConfig : Config(
     )
     var generalColor = PolyColor(0xFFFFFFFF.toInt())
 
+    @Switch(
+        title = "Eraser",
+        category = CATEGORY_GENERAL
+    )
+    var generalEraserEnabled = false
+
+    var generalEraserEnabledState by mutableStateOf(generalEraserEnabled)
+        private set
+
     @CrosshairEditor(category = CATEGORY_GENERAL, entityMode = false)
     var generalCrosshairJson: String = CrosshairSetData.default(DefaultCrosshairs.GENERAL).encode()
 
@@ -116,6 +136,15 @@ object EntityCrosshairConfig : Config(
         category = CATEGORY_ENTITY
     )
     var entityColor = PolyColor(0xFFFFFFFF.toInt())
+
+    @Switch(
+        title = "Eraser",
+        category = CATEGORY_ENTITY
+    )
+    var entityEraserEnabled = false
+
+    var entityEraserEnabledState by mutableStateOf(entityEraserEnabled)
+        private set
 
     @CrosshairEditor(category = CATEGORY_ENTITY, entityMode = true)
     var entityCrosshairJson: String = CrosshairSetData.default(DefaultCrosshairs.ENTITY).encode()

@@ -84,7 +84,14 @@ class CrosshairEditorVisualizer : Visualizer {
                 )
             )
         }
-        var canvasSize by remember(prop.id) { mutableStateOf(setData.canvasSize.coerceIn(Constants.MIN_CANVAS_SIZE, Constants.MAX_CANVAS_SIZE)) }
+        var canvasSize by remember(prop.id) {
+            mutableStateOf(
+                setData.canvasSize.coerceIn(
+                    Constants.MIN_CANVAS_SIZE,
+                    Constants.MAX_CANVAS_SIZE
+                )
+            )
+        }
         var canvasSizeText by remember { mutableStateOf(canvasSize.toString()) }
 
         fun renderPixelsToImage(size: Int): BufferedImage {
@@ -247,8 +254,14 @@ class CrosshairEditorVisualizer : Visualizer {
                                     when (event.type) {
                                         PointerEventType.Press, PointerEventType.Move -> {
                                             val buttons = event.buttons
-                                            if (buttons.isPrimaryPressed) paintAt(pos, erase = false)
-                                            else if (buttons.isSecondaryPressed) paintAt(pos, erase = true)
+                                            if (buttons.isPrimaryPressed) paintAt(
+                                                pos,
+                                                erase =
+                                                    if (entityMode)
+                                                        EntityCrosshairConfig.entityEraserEnabledState
+                                                    else
+                                                        EntityCrosshairConfig.generalEraserEnabledState
+                                            )
                                         }
 
                                         else -> {}
