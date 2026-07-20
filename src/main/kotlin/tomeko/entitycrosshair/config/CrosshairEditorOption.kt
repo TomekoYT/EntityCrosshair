@@ -4,7 +4,6 @@ package tomeko.entitycrosshair.config
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -17,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
@@ -42,6 +43,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.polyfrost.oneconfig.api.config.v1.Property
 import org.polyfrost.oneconfig.api.config.v1.Visualizer
@@ -74,14 +76,22 @@ class CrosshairEditorVisualizer : Visualizer {
         }
 
         val pixels = remember(prop.id) { mutableStateOf(loadPixelsFromBase64(setData.current.img)) }
-        var penColor by remember(prop.id) { mutableStateOf(Color.White) }
-        var canvasSize by remember(prop.id) { mutableStateOf(setData.canvasSize.coerceIn(Constants.MIN_CANVA_SIZE, Constants.MAX_CANVA_SIZE)) }
+        var penColor by remember(prop.id) {
+            mutableStateOf(
+                Color(
+                    if (entityMode) EntityCrosshairConfig.entityColor.argb
+                    else EntityCrosshairConfig.generalColor.argb
+                )
+            )
+        }
+        var canvasSize by remember(prop.id) { mutableStateOf(setData.canvasSize.coerceIn(Constants.MIN_CANVAS_SIZE, Constants.MAX_CANVAS_SIZE)) }
+        var canvasSizeText by remember { mutableStateOf(canvasSize.toString()) }
 
         fun renderPixelsToImage(size: Int): BufferedImage {
             val img = BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB)
             for (y in 0 until size) {
                 for (x in 0 until size) {
-                    img.setRGB(x, y, pixels.value[x + y * Constants.MAX_CANVA_SIZE] ?: 0)
+                    img.setRGB(x, y, pixels.value[x + y * Constants.MAX_CANVAS_SIZE] ?: 0)
                 }
             }
             return img
@@ -89,7 +99,21 @@ class CrosshairEditorVisualizer : Visualizer {
 
         LaunchedEffect(prop.id, pixels.value, canvasSize) {
             val pngBytes = renderPixelsToImage(canvasSize).toPngBytes()
-            if (entityMode) CrosshairRenderer.updateEntityTexture(pngBytes) else CrosshairRenderer.updateDefaultTexture(pngBytes)
+            if (entityMode) CrosshairRenderer.updateEntityTexture(pngBytes) else CrosshairRenderer.updateDefaultTexture(
+                pngBytes
+            )
+        }
+
+        LaunchedEffect(
+            EntityCrosshairConfig.generalColor.argb,
+            EntityCrosshairConfig.entityColor.argb
+        ) {
+            penColor = Color(
+                if (entityMode)
+                    EntityCrosshairConfig.entityColor.argb
+                else
+                    EntityCrosshairConfig.generalColor.argb
+            )
         }
 
         fun persist(newSetData: CrosshairSetData) {
@@ -98,7 +122,9 @@ class CrosshairEditorVisualizer : Visualizer {
             @Suppress("UNCHECKED_CAST")
             (prop as Property<Any>).set(newSetData.encode())
 
-            if (entityMode) EntityCrosshairConfig.onEntityChanged(newSetData) else EntityCrosshairConfig.onGeneralChanged(newSetData)
+            if (entityMode) EntityCrosshairConfig.onEntityChanged(newSetData) else EntityCrosshairConfig.onGeneralChanged(
+                newSetData
+            )
         }
 
         fun saveCurrent() {
@@ -123,7 +149,7 @@ class CrosshairEditorVisualizer : Visualizer {
         }
 
         fun loadImageIntoEditor(image: BufferedImage) {
-            if (image.width != image.height || image.width !in Constants.MIN_CANVA_SIZE..Constants.MAX_CANVA_SIZE) {
+            if (image.width != image.height || image.width !in Constants.MIN_CANVAS_SIZE..Constants.MAX_CANVAS_SIZE) {
                 return
             }
             canvasSize = image.height
@@ -131,21 +157,70 @@ class CrosshairEditorVisualizer : Visualizer {
             for (y in 0 until image.height) {
                 for (x in 0 until image.width) {
                     val c = image.getRGB(x, y)
-                    if (c ushr 24 != 0) newPixels[x + y * Constants.MAX_CANVA_SIZE] = c
+                    if (c ushr 24 != 0) newPixels[x + y * Constants.MAX_CANVAS_SIZE] = c
                 }
             }
             pixels.value = newPixels
         }
 
         Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
-                Text("Canvas size: $canvasSize", color = Color.White, modifier = Modifier.width(140.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            ) {
+                Text(
+                    "Canvas size:",
+                    color = Color.White,
+                    modifier = Modifier.width(100.dp)
+                )
+
                 Slider(
                     value = canvasSize.toFloat(),
-                    onValueChange = { canvasSize = it.toInt().coerceIn(Constants.MIN_CANVA_SIZE, Constants.MAX_CANVA_SIZE) },
-                    valueRange = Constants.MIN_CANVA_SIZE.toFloat()..Constants.MAX_CANVA_SIZE.toFloat(),
-                    steps = Constants.MAX_CANVA_SIZE - Constants.MIN_CANVA_SIZE - 1,
-                    modifier = Modifier.weight(1f),
+                    onValueChange = {
+                        canvasSize = it.toInt().coerceIn(
+                            Constants.MIN_CANVAS_SIZE,
+                            Constants.MAX_CANVAS_SIZE
+                        )
+                        canvasSizeText = canvasSize.toString()
+                    },
+                    valueRange = Constants.MIN_CANVAS_SIZE.toFloat()..
+                            Constants.MAX_CANVAS_SIZE.toFloat(),
+                    steps = Constants.MAX_CANVAS_SIZE - Constants.MIN_CANVAS_SIZE - 1,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(Modifier.width(8.dp))
+
+                OutlinedTextField(
+                    value = canvasSizeText,
+                    onValueChange = { text ->
+                        if (text.all(Char::isDigit)) {
+                            canvasSizeText = text
+
+                            text.toIntOrNull()?.let { value ->
+                                canvasSize = value.coerceIn(
+                                    Constants.MIN_CANVAS_SIZE,
+                                    Constants.MAX_CANVAS_SIZE
+                                )
+                            }
+                        }
+                    },
+                    singleLine = true,
+                    modifier = Modifier.width(80.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = Color.White,
+                        disabledTextColor = Color.White,
+                        cursorColor = Color.White,
+                        focusedBorderColor = Color.White,
+                        unfocusedBorderColor = Color.White,
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.White,
+                    )
                 )
             }
 
@@ -159,7 +234,7 @@ class CrosshairEditorVisualizer : Visualizer {
                                 val gx = (offset.x / cellPx).toInt()
                                 val gy = (offset.y / cellPx).toInt()
                                 if (gx !in 0 until canvasSize || gy !in 0 until canvasSize) return
-                                val idx = gx + gy * Constants.MAX_CANVA_SIZE
+                                val idx = gx + gy * Constants.MAX_CANVAS_SIZE
                                 val newPixels = HashMap(pixels.value)
                                 if (erase) newPixels.remove(idx) else newPixels[idx] = penColor.toArgb()
                                 pixels.value = newPixels
@@ -175,6 +250,7 @@ class CrosshairEditorVisualizer : Visualizer {
                                             if (buttons.isPrimaryPressed) paintAt(pos, erase = false)
                                             else if (buttons.isSecondaryPressed) paintAt(pos, erase = true)
                                         }
+
                                         else -> {}
                                     }
                                 }
@@ -187,38 +263,6 @@ class CrosshairEditorVisualizer : Visualizer {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column {
-                    Text("Pen color", color = Color.White)
-                    Row(modifier = Modifier.padding(vertical = 4.dp)) {
-                        for (swatch in listOf(Color.White, Color.Black, Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Cyan, Color.Magenta)) {
-                            Box(
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .padding(1.dp)
-                                    .background(swatch)
-                                    .pointerInput(Unit) { detectTapGestures { penColor = swatch } },
-                            )
-                        }
-                    }
-                    var hex by remember(prop.id) { mutableStateOf(colorToHex(penColor)) }
-                    OutlinedTextField(
-                        value = hex,
-                        onValueChange = {
-                            hex = it
-                            hexToColor(it)?.let { c -> penColor = c }
-                        },
-                        label = { Text("Hex (AARRGGBB)") },
-                        singleLine = true,
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = Color.White,
-                            cursorColor = Color.White,
-                            focusedBorderColor = Color.LightGray,
-                            unfocusedBorderColor = Color.DarkGray,
-                        ),
-                        modifier = Modifier.width(160.dp).padding(top = 8.dp),
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
                     Button(onClick = { pixels.value = emptyMap() }, modifier = Modifier.padding(bottom = 4.dp)) {
                         Text("Reset")
                     }
@@ -264,7 +308,8 @@ class CrosshairEditorVisualizer : Visualizer {
                         }
                         Button(
                             onClick = {
-                                persist(setData.copy(presets = setData.presets.filterNot { it === preset }.toMutableList()))
+                                persist(setData.copy(presets = setData.presets.filterNot { it === preset }
+                                    .toMutableList()))
                             },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFD32F2F)),
                             contentPadding = PaddingValues(6.dp),
@@ -302,7 +347,12 @@ private fun TrashIcon(modifier: Modifier = Modifier, color: Color = Color.White)
         drawLine(color, Offset(bodyRight, bodyTop), Offset(w * 0.70f, bodyBottom), strokeWidth = strokeW)
         drawLine(color, Offset(w * 0.30f, bodyBottom), Offset(w * 0.70f, bodyBottom), strokeWidth = strokeW)
 
-        drawLine(color, Offset(w * 0.5f, bodyTop + strokeW), Offset(w * 0.5f, bodyBottom - strokeW), strokeWidth = strokeW * 0.8f)
+        drawLine(
+            color,
+            Offset(w * 0.5f, bodyTop + strokeW),
+            Offset(w * 0.5f, bodyBottom - strokeW),
+            strokeWidth = strokeW * 0.8f
+        )
     }
 }
 
@@ -314,7 +364,7 @@ private fun DrawScope.drawGrid(canvasSize: Int, cellPx: Float, pixels: Map<Int, 
 
     for (y in 0 until canvasSize) {
         for (x in 0 until canvasSize) {
-            val idx = x + y * Constants.MAX_CANVA_SIZE
+            val idx = x + y * Constants.MAX_CANVAS_SIZE
             val argb = pixels[idx]
             val checker = if ((x + y) % 2 == 0) Color(0xFF3A3F4B) else Color(0xFF2E323C)
             val isCenterCell = isOdd && x == centerIndex && y == centerIndex
@@ -352,7 +402,7 @@ private fun loadPixelsFromBase64(base64: String): Map<Int, Int> {
     for (y in 0 until image.height) {
         for (x in 0 until image.width) {
             val c = image.getRGB(x, y)
-            if (c ushr 24 != 0) map[x + y * Constants.MAX_CANVA_SIZE] = c
+            if (c ushr 24 != 0) map[x + y * Constants.MAX_CANVAS_SIZE] = c
         }
     }
     return map

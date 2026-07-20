@@ -20,11 +20,11 @@ class GeneralCanvaConfig : CanvaConfig<GeneralCrosshairEntry> {
 
     @Slider(
         name = "Canva Size",
-        min = Constants.MIN_CANVA_SIZE.toFloat(), max = Constants.MAX_CANVA_SIZE.toFloat(),
+        min = Constants.MIN_CANVAS_SIZE.toFloat(), max = Constants.MAX_CANVAS_SIZE.toFloat(),
         category = EntityCrosshairConfig.CATEGORY_GENERAL
     )
-    override var canvaSize = Constants.MIN_CANVA_SIZE
-        get() = field.coerceIn(Constants.MIN_CANVA_SIZE, Constants.MAX_CANVA_SIZE)
+    override var canvaSize = Constants.MIN_CANVAS_SIZE
+        get() = field.coerceIn(Constants.MIN_CANVAS_SIZE, Constants.MAX_CANVAS_SIZE)
 
     override var newCurrentCrosshair = GeneralCrosshairEntry()
 }

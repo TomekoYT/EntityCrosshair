@@ -58,22 +58,22 @@ object CrosshairRenderer {
 
     //? if = 1.8.9 {
     /*var defaultTextureLocation: ResourceLocation? =
-        mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(Constants.MIN_CANVA_SIZE, Constants.MIN_CANVA_SIZE))
+        mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE))
     var entityTextureLocation: ResourceLocation? =
-        mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", DynamicTexture(Constants.MIN_CANVA_SIZE, Constants.MIN_CANVA_SIZE))
+        mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE))
     *///?} else {
     private var defaultTextureLocation: Identifier? = null
     private var entityTextureLocation: Identifier? = null
     //?}
 
     //? if = 1.8.9 {
-    /*private var whiteTexture = DynamicTexture(Constants.MIN_CANVA_SIZE, Constants.MIN_CANVA_SIZE)
+    /*private var whiteTexture = DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE)
     private var whiteTextureLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, whiteTexture)
-    private var vanilla = DynamicTexture(Constants.MIN_CANVA_SIZE, Constants.MIN_CANVA_SIZE)
+    private var vanilla = DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE)
     private var vanillaLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, vanilla)
       *///?} else {
-    private var defaultTextureSize = Constants.MIN_CANVA_SIZE
-    private var entityTextureSize = Constants.MIN_CANVA_SIZE
+    private var defaultTextureSize = Constants.MIN_CANVAS_SIZE
+    private var entityTextureSize = Constants.MIN_CANVAS_SIZE
     //?}
 
     fun updateDefaultTexture(
@@ -172,8 +172,8 @@ object CrosshairRenderer {
             GL.rotate(crosshair.rotation.toFloat(), 0f, 0f, 1f)
             val configSize = if (lookingAtEntity()) EntityCrosshairConfig.entityCanvaConfig.canvaSize else EntityCrosshairConfig.generalCanvaConfig.canvaSize
             val scale = crosshair.scale / 100f
-            val textureSize = Constants.MIN_CANVA_SIZE + 1 - configSize % 2
-            val autoScaledSize = Constants.MIN_CANVA_SIZE + 1 - configSize % 2
+            val textureSize = Constants.MIN_CANVAS_SIZE + 1 - configSize % 2
+            val autoScaledSize = Constants.MIN_CANVAS_SIZE + 1 - configSize % 2
             val size = ceil(autoScaledSize * mcScale * scale).toInt()
             val translation = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * mcScale * scale)
             GL.translate(translation, translation, 0f)
@@ -260,7 +260,7 @@ object CrosshairRenderer {
 
         val window = mc.window
         val scale = crosshair.scale / 100f
-        val autoScaledSize = Constants.MIN_CANVA_SIZE + 1 - textureSize % 2
+        val autoScaledSize = Constants.MIN_CANVAS_SIZE + 1 - textureSize % 2
         val size = ceil(autoScaledSize * scale).toInt().coerceAtLeast(1)
         val textureScale = size.toFloat() / textureSize
         val translation = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * scale)

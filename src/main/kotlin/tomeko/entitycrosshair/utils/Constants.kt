@@ -10,10 +10,12 @@ import java.io.File
 object Constants {
     const val MOD_NAME = "@MOD_NAME@"
     const val MOD_ID = "@MOD_ID@"
-    const val MOD_VERSION = "@MOD_VERSION@"
+    //? if = 1.8.9 {
+    /*const val MOD_VERSION = "@MOD_VERSION@"
+    *///?}
 
-    const val MIN_CANVA_SIZE = 15
-    const val MAX_CANVA_SIZE = 37
+    const val MIN_CANVAS_SIZE = 15
+    const val MAX_CANVAS_SIZE = 37
 
     //? if = 1.8.9 {
     /*val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${MOD_ID}/caches/"

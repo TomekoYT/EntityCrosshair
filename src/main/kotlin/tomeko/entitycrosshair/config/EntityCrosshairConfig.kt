@@ -18,7 +18,11 @@ import tomeko.entitycrosshair.config.base.GeneralDrawer
 import tomeko.entitycrosshair.config.entity.EntityCanvaConfig
 import tomeko.entitycrosshair.config.general.GeneralCanvaConfig
 *///?} else {
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
+import org.polyfrost.compose.render.PolyColor
 import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import tomeko.entitycrosshair.config.CrosshairRenderer.toPngBytes
@@ -46,6 +50,29 @@ object EntityCrosshairConfig : Config(
     Category.HUD
     //?}
 ) {
+    fun register() {
+        //? if = 1.8.9 {
+        /*initialize()
+
+        this.generateOptionList(generalCanvaConfig, mod.defaultPage, this.mod, false)
+        this.generateOptionList(generalCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
+        addListener("generalCanvaConfig.canvaSize") { clampOutOfBoundsPixels(generalCanvaConfig, GeneralDrawer) }
+
+        this.generateOptionList(entityCanvaConfig, mod.defaultPage, this.mod, false)
+        this.generateOptionList(entityCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
+        addListener("entityCanvaConfig.canvaSize") { clampOutOfBoundsPixels(entityCanvaConfig, EntityDrawer) }
+
+        this.generateOptionList(settingsConfig, mod.defaultPage, this.mod, false)
+        *///?} else {
+        preload()
+        clearPropertyLabels()
+
+        generalSet = CrosshairSetData.decode(generalCrosshairJson, DefaultCrosshairs.GENERAL)
+        entitySet = CrosshairSetData.decode(entityCrosshairJson, DefaultCrosshairs.ENTITY)
+        pushTextures()
+        //?}
+    }
+
     //? if = 1.8.9 {
     /*@Exclude
     *///?}
@@ -74,15 +101,28 @@ object EntityCrosshairConfig : Config(
     *///?}
 
     //? if >= 26.1 {
-    @JvmStatic
-    @Switch(title = "Enabled", category = "General", subcategory = "")
-    var enabled: Boolean = true
+    @Color(
+        title = "Pen Color",
+        category = CATEGORY_GENERAL
+    )
+    var generalColor = PolyColor(0xFFFFFFFF.toInt())
 
     @CrosshairEditor(category = CATEGORY_GENERAL, entityMode = false)
     var generalCrosshairJson: String = CrosshairSetData.default(DefaultCrosshairs.GENERAL).encode()
 
+
+    @Color(
+        title = "Pen Color",
+        category = CATEGORY_ENTITY
+    )
+    var entityColor = PolyColor(0xFFFFFFFF.toInt())
+
     @CrosshairEditor(category = CATEGORY_ENTITY, entityMode = true)
     var entityCrosshairJson: String = CrosshairSetData.default(DefaultCrosshairs.ENTITY).encode()
+
+    @JvmStatic
+    @Switch(title = "Enabled", category = CATEGORY_SETTINGS)
+    var enabled: Boolean = true
 
     @Switch(title = "Show in F3 (Debug)", category = CATEGORY_SETTINGS)
     var showInDebug = false
@@ -103,29 +143,6 @@ object EntityCrosshairConfig : Config(
         private set
 
     //?}
-
-    fun register() {
-        //? if = 1.8.9 {
-        /*initialize()
-
-        this.generateOptionList(generalCanvaConfig, mod.defaultPage, this.mod, false)
-        this.generateOptionList(generalCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
-        addListener("generalCanvaConfig.canvaSize") { clampOutOfBoundsPixels(generalCanvaConfig, GeneralDrawer) }
-
-        this.generateOptionList(entityCanvaConfig, mod.defaultPage, this.mod, false)
-        this.generateOptionList(entityCanvaConfig.newCurrentCrosshair, mod.defaultPage, this.mod, false)
-        addListener("entityCanvaConfig.canvaSize") { clampOutOfBoundsPixels(entityCanvaConfig, EntityDrawer) }
-
-        this.generateOptionList(settingsConfig, mod.defaultPage, this.mod, false)
-        *///?} else {
-        preload()
-        clearPropertyLabels()
-
-        generalSet = CrosshairSetData.decode(generalCrosshairJson, DefaultCrosshairs.GENERAL)
-        entitySet = CrosshairSetData.decode(entityCrosshairJson, DefaultCrosshairs.ENTITY)
-        pushTextures()
-        //?}
-    }
 
     //? if = 1.8.9 {
     /*private fun <T : CrosshairEntry> clampOutOfBoundsPixels(canvaConfig: CanvaConfig<T>, drawer: CrosshairDrawer<T>) {

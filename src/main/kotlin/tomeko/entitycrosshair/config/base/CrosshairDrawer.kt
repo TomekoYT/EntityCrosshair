@@ -52,7 +52,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
     private val exportButton = BasicButton(64, 32, "Export", 2, ColorPalette.SECONDARY)
 
     val pixels: Array<CrosshairPixel<T>> =
-        Array(Constants.MAX_CANVA_SIZE * Constants.MAX_CANVA_SIZE) { CrosshairPixel(it, canvaConfig) }
+        Array(Constants.MAX_CANVAS_SIZE * Constants.MAX_CANVAS_SIZE) { CrosshairPixel(it, canvaConfig) }
     val elements = HashMap<T, CrosshairPresetElement<T>>()
     val removeQueue = ArrayList<T>()
     private val colorSelector = CrosshairColorSelector(canvaConfig)
@@ -209,10 +209,10 @@ class CrosshairDrawer<T : CrosshairEntry>(
     fun loadImage(image: BufferedImage?, save: Boolean, entry: T = entryFactory()): OneImage? {
         val loadedImage = OneImage(image)
         val dimensionsSame = loadedImage.width == loadedImage.height
-        val withinSize = loadedImage.width in Constants.MIN_CANVA_SIZE..Constants.MAX_CANVA_SIZE
+        val withinSize = loadedImage.width in Constants.MIN_CANVAS_SIZE..Constants.MAX_CANVAS_SIZE
         if (!dimensionsSame || !withinSize) {
             val message =
-                if (!dimensionsSame) "The width of the image must be equal to the height" else "The image must be between ${Constants.MIN_CANVA_SIZE}x${Constants.MIN_CANVA_SIZE} and ${Constants.MAX_CANVA_SIZE}x${Constants.MAX_CANVA_SIZE} pixels"
+                if (!dimensionsSame) "The width of the image must be equal to the height" else "The image must be between ${Constants.MIN_CANVAS_SIZE}x${Constants.MIN_CANVAS_SIZE} and ${Constants.MAX_CANVAS_SIZE}x${Constants.MAX_CANVAS_SIZE} pixels"
             Notifications.INSTANCE.send(
                 Constants.MOD_NAME,
                 "$message (width: ${loadedImage.width} height: ${loadedImage.height})."

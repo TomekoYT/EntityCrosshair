@@ -43,7 +43,7 @@ object DefaultCrosshairs {
 data class CrosshairSetData(
     var presets: MutableList<CrosshairEntry> = mutableListOf(),
     var current: CrosshairEntry = CrosshairEntry(),
-    var canvasSize: Int = Constants.MIN_CANVA_SIZE,
+    var canvasSize: Int = Constants.MIN_CANVAS_SIZE,
     var penColorArgb: Int = -1,
 ) {
     companion object {
