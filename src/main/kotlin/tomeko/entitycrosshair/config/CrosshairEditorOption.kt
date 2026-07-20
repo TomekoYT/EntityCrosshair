@@ -24,6 +24,7 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -113,6 +114,12 @@ class CrosshairEditorVisualizer : Visualizer {
             }
 
             persist(setData.copy(current = newCurrent, presets = newPresets, canvasSize = canvasSize))
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                saveCurrent()
+            }
         }
 
         fun loadImageIntoEditor(image: BufferedImage) {
