@@ -21,7 +21,7 @@ import tomeko.entitycrosshair.config.EntityCrosshairConfig;
         Gui.class
         //?}
 )
-public abstract class CancelCrosshairMixin {
+public abstract class HudMixin {
     @Inject(method = "extractCrosshair", at = @At("HEAD"), cancellable = true)
     private void entitycrosshair$cancelVanillaCrosshair(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
         if (EntityCrosshairConfig.getEnabled()) {

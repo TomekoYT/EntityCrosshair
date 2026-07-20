@@ -15,7 +15,8 @@ public class GuiIngameMixin {
     private void entitycrosshair$check(CallbackInfoReturnable<Boolean> cir) {
         SettingsConfig cfg = EntityCrosshairConfig.INSTANCE.getSettingsConfig();
         Minecraft mc = Minecraft.getMinecraft();
-        if (!EntityCrosshairConfig.INSTANCE.enabled) return;
+        if (!cfg.getEnabled()) return;
+
         if ((!cfg.getShowInGuis() && mc.currentScreen != null) || (!cfg.getShowInThirdPerson() && mc.gameSettings.thirdPersonView != 0)) {
             cir.setReturnValue(false);
         }

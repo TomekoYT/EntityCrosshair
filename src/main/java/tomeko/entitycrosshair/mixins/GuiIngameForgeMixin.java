@@ -13,10 +13,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GuiIngameForgeMixin {
     @Inject(method = "renderCrosshairs", at = @At("HEAD"), cancellable = true, remap = false)
     private void entitycrosshair$cancelVanillaCrosshair(int width, int height, CallbackInfo ci) {
-        if (EntityCrosshairConfig.INSTANCE.enabled) {
-            ci.cancel();
-            GlStateManager.enableAlpha();
-        }
+        if (!EntityCrosshairConfig.INSTANCE.getSettingsConfig().getEnabled()) return;
+
+        ci.cancel();
+        GlStateManager.enableAlpha();
     }
 }
 *///?}
