@@ -12,7 +12,7 @@ import tomeko.entitycrosshair.config.base.GeneralDrawer
 class GeneralCrosshairEntry(
     override var img: String = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAHklEQVR42mNgGH7gPxAMQc0k2wQDyDaji4+G9pADAJoJM827QMwQAAAAAElFTkSuQmCC",
 ) : CrosshairEntry {
-    @Slider(name = "Scale %", min = 0f, max = 200f, category = EntityCrosshairConfig.CATEGORY_GENERAL)
+    @Slider(name = "Scale %", min = 0f, max = 1000f, category = EntityCrosshairConfig.CATEGORY_GENERAL)
     override var scale = 100
 
     @Slider(name = "Rotation", min = -180f, max = 180f, category = EntityCrosshairConfig.CATEGORY_GENERAL)

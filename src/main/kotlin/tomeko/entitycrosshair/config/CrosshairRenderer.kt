@@ -253,13 +253,16 @@ object CrosshairRenderer {
         if (!shouldShow()) return
 
         val entityMode = lookingAtEntity()
-        val crosshair = if (entityMode) EntityCrosshairConfig.entitySet.current else EntityCrosshairConfig.generalSet.current
+        val crosshair =
+            if (entityMode) EntityCrosshairConfig.entitySet.current else EntityCrosshairConfig.generalSet.current
         val textureLocation = (if (entityMode) entityTextureLocation else defaultTextureLocation) ?: return
         val textureSize = if (entityMode) entityTextureSize else defaultTextureSize
         if (textureSize <= 0) return
 
         val window = mc.window
-        val scale = crosshair.scale / 100f
+        val scale =
+            if (entityMode) EntityCrosshairConfig.entityScale / 100f
+            else EntityCrosshairConfig.generalScale / 100f
         val autoScaledSize = Constants.MIN_CANVAS_SIZE + 1 - textureSize % 2
         val size = ceil(autoScaledSize * scale).toInt().coerceAtLeast(1)
         val textureScale = size.toFloat() / textureSize

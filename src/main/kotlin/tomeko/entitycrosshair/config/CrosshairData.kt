@@ -8,7 +8,6 @@ import tomeko.entitycrosshair.utils.Constants
 @Serializable
 data class CrosshairEntry(
     var img: String = "",
-    var scale: Int = 100,
     var rotation: Int = 0,
     var offsetX: Int = 0,
     var offsetY: Int = 0,
@@ -16,7 +15,6 @@ data class CrosshairEntry(
 ) {
     fun loadFrom(entry: CrosshairEntry) {
         this.img = entry.img
-        this.scale = entry.scale
         this.rotation = entry.rotation
         this.offsetX = entry.offsetX
         this.offsetY = entry.offsetY
@@ -24,7 +22,6 @@ data class CrosshairEntry(
     }
 
     fun copyTransformFrom(entry: CrosshairEntry): CrosshairEntry = copy(
-        scale = entry.scale,
         rotation = entry.rotation,
         offsetX = entry.offsetX,
         offsetY = entry.offsetY,

@@ -112,6 +112,15 @@ object EntityCrosshairConfig : Config(
     *///?}
 
     //? if >= 26.1 {
+    @Slider(
+        title = "Scale",
+        min = 0f,
+        max = 200f,
+        step = 1f,
+        category = CATEGORY_GENERAL
+    )
+    var generalScale = 100f
+
     @Color(
         title = "Pen Color",
         category = CATEGORY_GENERAL
@@ -130,6 +139,15 @@ object EntityCrosshairConfig : Config(
     @CrosshairEditor(category = CATEGORY_GENERAL, entityMode = false)
     var generalCrosshairJson: String = CrosshairSetData.default(DefaultCrosshairs.GENERAL).encode()
 
+
+    @Slider(
+        title = "Scale",
+        min = 0f,
+        max = 1000f,
+        step = 1f,
+        category = CATEGORY_ENTITY
+    )
+    var entityScale = 100f
 
     @Color(
         title = "Pen Color",
