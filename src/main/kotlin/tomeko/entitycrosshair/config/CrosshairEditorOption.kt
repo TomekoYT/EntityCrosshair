@@ -232,10 +232,10 @@ class CrosshairEditorVisualizer : Visualizer {
             Spacer(modifier = Modifier.height(12.dp))
             Text("Saved presets (click to load):", color = Color.White, modifier = Modifier.padding(bottom = 4.dp))
 
-            LazyVerticalGrid(columns = GridCells.Fixed(4), modifier = Modifier.height(260.dp)) {
+            LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.height(340.dp)) {
                 items(setData.presets) { preset ->
                     Column(
-                        modifier = Modifier.padding(6.dp).pointerInput(preset) {
+                        modifier = Modifier.padding(8.dp).pointerInput(preset) {
                             detectTapGestures {
                                 setData = setData.copy(current = preset.copy())
                                 pixels.value = loadPixelsFromBase64(preset.img)
@@ -249,7 +249,7 @@ class CrosshairEditorVisualizer : Visualizer {
                                 bitmap = bmp,
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(64.dp)
+                                    .size(200.dp)
                                     .background(Color(0xFF2E323C)),
                                 filterQuality = FilterQuality.None,
                             )
@@ -260,9 +260,9 @@ class CrosshairEditorVisualizer : Visualizer {
                             },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFD32F2F)),
                             contentPadding = PaddingValues(6.dp),
-                            modifier = Modifier.padding(top = 4.dp),
+                            modifier = Modifier.padding(top = 6.dp),
                         ) {
-                            TrashIcon(modifier = Modifier.size(14.dp), color = Color.White)
+                            TrashIcon(modifier = Modifier.size(16.dp), color = Color.White)
                         }
                     }
                 }
@@ -298,19 +298,43 @@ private fun TrashIcon(modifier: Modifier = Modifier, color: Color = Color.White)
     }
 }
 
+private val CENTER_MARK_COLOR = Color(0xFF9C3232)
+
 private fun DrawScope.drawGrid(canvasSize: Int, cellPx: Float, pixels: Map<Int, Int>) {
+    val isOdd = canvasSize % 2 == 1
+    val centerIndex = canvasSize / 2
+
     for (y in 0 until canvasSize) {
         for (x in 0 until canvasSize) {
             val idx = x + y * 32
             val argb = pixels[idx]
             val checker = if ((x + y) % 2 == 0) Color(0xFF3A3F4B) else Color(0xFF2E323C)
-            val color = if (argb != null) argbToComposeColor(argb) else checker
+            val isCenterCell = isOdd && x == centerIndex && y == centerIndex
+            val background = if (isCenterCell) CENTER_MARK_COLOR else checker
+            val color = if (argb != null) argbToComposeColor(argb) else background
             drawRect(
                 color = color,
                 topLeft = Offset(x * cellPx, y * cellPx),
                 size = androidx.compose.ui.geometry.Size(cellPx - 1f, cellPx - 1f),
             )
         }
+    }
+
+    if (!isOdd) {
+        val centerPx = centerIndex * cellPx
+        val armLength = (cellPx * 0.75f).coerceAtLeast(4f)
+        drawLine(
+            color = Color.Red,
+            start = Offset(centerPx, centerPx - armLength),
+            end = Offset(centerPx, centerPx + armLength),
+            strokeWidth = 2f,
+        )
+        drawLine(
+            color = Color.Red,
+            start = Offset(centerPx - armLength, centerPx),
+            end = Offset(centerPx + armLength, centerPx),
+            strokeWidth = 2f,
+        )
     }
 }
 
