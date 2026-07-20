@@ -51,7 +51,8 @@ class CrosshairDrawer<T : CrosshairEntry>(
     private val importButton = BasicButton(64, 32, "Import", 2, ColorPalette.SECONDARY)
     private val exportButton = BasicButton(64, 32, "Export", 2, ColorPalette.SECONDARY)
 
-    val pixels: Array<CrosshairPixel<T>> = Array(1024) { CrosshairPixel(it, canvaConfig) }
+    val pixels: Array<CrosshairPixel<T>> =
+        Array(Constants.MAX_CANVA_SIZE * Constants.MAX_CANVA_SIZE) { CrosshairPixel(it, canvaConfig) }
     val elements = HashMap<T, CrosshairPresetElement<T>>()
     val removeQueue = ArrayList<T>()
     private val colorSelector = CrosshairColorSelector(canvaConfig)
@@ -138,8 +139,24 @@ class CrosshairDrawer<T : CrosshairEntry>(
         syncIfChanged()
 
         if (size % 2 == 0) {
-            nanoVGHelper.drawLine(vg, (x + 128).toFloat(), (y + 108).toFloat(), (x + 128).toFloat(), (y + 148).toFloat(), 1f, OneColor("703A3AFF").rgb)
-            nanoVGHelper.drawLine(vg, (x + 108).toFloat(), (y + 128).toFloat(), (x + 148).toFloat(), (y + 128).toFloat(), 1f, OneColor("703A3AFF").rgb)
+            nanoVGHelper.drawLine(
+                vg,
+                (x + 128).toFloat(),
+                (y + 108).toFloat(),
+                (x + 128).toFloat(),
+                (y + 148).toFloat(),
+                1f,
+                OneColor("703A3AFF").rgb
+            )
+            nanoVGHelper.drawLine(
+                vg,
+                (x + 108).toFloat(),
+                (y + 128).toFloat(),
+                (x + 148).toFloat(),
+                (y + 128).toFloat(),
+                1f,
+                OneColor("703A3AFF").rgb
+            )
         }
 
         importButton.draw(vg, (x + 270).toFloat(), (y + 48).toFloat(), inputHandler)
@@ -178,7 +195,12 @@ class CrosshairDrawer<T : CrosshairEntry>(
         for (i in 0..<count) {
             val posX = i % 4
             val posY = i / 4
-            getElement(canvaConfig.newCrosshairs[i]).draw(vg, x + 349 + posX * 165f, y + posY * 165f + scroll, inputHandler)
+            getElement(canvaConfig.newCrosshairs[i]).draw(
+                vg,
+                x + 349 + posX * 165f,
+                y + posY * 165f + scroll,
+                inputHandler
+            )
         }
 
         ScissorHelper.INSTANCE.resetScissor(vg, scissor)
@@ -187,10 +209,14 @@ class CrosshairDrawer<T : CrosshairEntry>(
     fun loadImage(image: BufferedImage?, save: Boolean, entry: T = entryFactory()): OneImage? {
         val loadedImage = OneImage(image)
         val dimensionsSame = loadedImage.width == loadedImage.height
-        val withinSize = loadedImage.width in 15..32
+        val withinSize = loadedImage.width in Constants.MIN_CANVA_SIZE..Constants.MAX_CANVA_SIZE
         if (!dimensionsSame || !withinSize) {
-            val message = if (!dimensionsSame) "The width of the image must be equal to the height" else "The image must be between 15x15 and 32x32 pixels"
-            Notifications.INSTANCE.send(Constants.MOD_NAME, "$message (width: ${loadedImage.width} height: ${loadedImage.height}).")
+            val message =
+                if (!dimensionsSame) "The width of the image must be equal to the height" else "The image must be between ${Constants.MIN_CANVA_SIZE}x${Constants.MIN_CANVA_SIZE} and ${Constants.MAX_CANVA_SIZE}x${Constants.MAX_CANVA_SIZE} pixels"
+            Notifications.INSTANCE.send(
+                Constants.MOD_NAME,
+                "$message (width: ${loadedImage.width} height: ${loadedImage.height})."
+            )
             return null
         }
         currentCrosshair.loadFrom(entry)

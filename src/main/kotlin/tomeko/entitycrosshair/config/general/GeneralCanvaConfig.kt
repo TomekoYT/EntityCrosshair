@@ -7,6 +7,7 @@ import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.core.OneColor
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import tomeko.entitycrosshair.config.base.CanvaConfig
+import tomeko.entitycrosshair.utils.Constants
 
 class GeneralCanvaConfig : CanvaConfig<GeneralCrosshairEntry> {
     @Exclude
@@ -19,11 +20,11 @@ class GeneralCanvaConfig : CanvaConfig<GeneralCrosshairEntry> {
 
     @Slider(
         name = "Canva Size",
-        min = 15f, max = 32f,
+        min = Constants.MIN_CANVA_SIZE.toFloat(), max = Constants.MAX_CANVA_SIZE.toFloat(),
         category = EntityCrosshairConfig.CATEGORY_GENERAL
     )
-    override var canvaSize = 15
-        get() = field.coerceIn(15, 32)
+    override var canvaSize = Constants.MIN_CANVA_SIZE
+        get() = field.coerceIn(Constants.MIN_CANVA_SIZE, Constants.MAX_CANVA_SIZE)
 
     override var newCurrentCrosshair = GeneralCrosshairEntry()
 }

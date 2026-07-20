@@ -12,6 +12,9 @@ object Constants {
     const val MOD_ID = "@MOD_ID@"
     const val MOD_VERSION = "@MOD_VERSION@"
 
+    const val MIN_CANVA_SIZE = 15
+    const val MAX_CANVA_SIZE = 37
+
     //? if = 1.8.9 {
     /*val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${MOD_ID}/caches/"
     val CACHES_FILE = File(CACHES_PATH)

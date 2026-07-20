@@ -9,6 +9,7 @@ import cc.polyfrost.oneconfig.gui.elements.BasicElement
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.color.ColorPalette
 import cc.polyfrost.oneconfig.utils.dsl.nanoVGHelper
+import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.indexToPosition
 
 class CrosshairPixel<T : CrosshairEntry>(
@@ -32,8 +33,8 @@ class CrosshairPixel<T : CrosshairEntry>(
 
     override fun draw(vg: Long, x: Float, y: Float, inputHandler: InputHandler) {
         val size = (256 - (canvaSize - 1)) / canvaSize.toFloat()
-        posX = index % 32
-        posY = index / 32
+        posX = index % Constants.MAX_CANVA_SIZE
+        posY = index / Constants.MAX_CANVA_SIZE
         val x1 = x + posX * (size + 1)
         val y1 = y + posY * (size + 1)
         width = size.toInt()

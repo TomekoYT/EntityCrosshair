@@ -3,6 +3,7 @@ package tomeko.entitycrosshair.config
 //? if >= 26.1 {
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import tomeko.entitycrosshair.utils.Constants
 
 @Serializable
 data class CrosshairEntry(
@@ -42,7 +43,7 @@ object DefaultCrosshairs {
 data class CrosshairSetData(
     var presets: MutableList<CrosshairEntry> = mutableListOf(),
     var current: CrosshairEntry = CrosshairEntry(),
-    var canvasSize: Int = 15,
+    var canvasSize: Int = Constants.MIN_CANVA_SIZE,
     var penColorArgb: Int = -1,
 ) {
     companion object {

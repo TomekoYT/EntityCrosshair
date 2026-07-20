@@ -46,6 +46,7 @@ import org.polyfrost.oneconfig.api.config.v1.Property
 import org.polyfrost.oneconfig.api.config.v1.Visualizer
 import org.polyfrost.oneconfig.api.config.v1.annotations.Option
 import tomeko.entitycrosshair.config.CrosshairRenderer.toPngBytes
+import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.copyToClipboard
 import tomeko.entitycrosshair.utils.getImageFromClipboard
 import tomeko.entitycrosshair.utils.toBase64
@@ -73,13 +74,13 @@ class CrosshairEditorVisualizer : Visualizer {
 
         val pixels = remember(prop.id) { mutableStateOf(loadPixelsFromBase64(setData.current.img)) }
         var penColor by remember(prop.id) { mutableStateOf(Color.White) }
-        var canvasSize by remember(prop.id) { mutableStateOf(setData.canvasSize.coerceIn(15, 32)) }
+        var canvasSize by remember(prop.id) { mutableStateOf(setData.canvasSize.coerceIn(Constants.MIN_CANVA_SIZE, Constants.MAX_CANVA_SIZE)) }
 
         fun renderPixelsToImage(size: Int): BufferedImage {
             val img = BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB)
             for (y in 0 until size) {
                 for (x in 0 until size) {
-                    img.setRGB(x, y, pixels.value[x + y * 32] ?: 0)
+                    img.setRGB(x, y, pixels.value[x + y * Constants.MAX_CANVA_SIZE] ?: 0)
                 }
             }
             return img
@@ -115,7 +116,7 @@ class CrosshairEditorVisualizer : Visualizer {
         }
 
         fun loadImageIntoEditor(image: BufferedImage) {
-            if (image.width != image.height || image.width !in 15..32) {
+            if (image.width != image.height || image.width !in Constants.MIN_CANVA_SIZE..Constants.MAX_CANVA_SIZE) {
                 return
             }
             canvasSize = image.height
@@ -123,7 +124,7 @@ class CrosshairEditorVisualizer : Visualizer {
             for (y in 0 until image.height) {
                 for (x in 0 until image.width) {
                     val c = image.getRGB(x, y)
-                    if (c ushr 24 != 0) newPixels[x + y * 32] = c
+                    if (c ushr 24 != 0) newPixels[x + y * Constants.MAX_CANVA_SIZE] = c
                 }
             }
             pixels.value = newPixels
@@ -134,9 +135,9 @@ class CrosshairEditorVisualizer : Visualizer {
                 Text("Canvas size: $canvasSize", color = Color.White, modifier = Modifier.width(140.dp))
                 Slider(
                     value = canvasSize.toFloat(),
-                    onValueChange = { canvasSize = it.toInt().coerceIn(15, 32) },
-                    valueRange = 15f..32f,
-                    steps = 32 - 15 - 1,
+                    onValueChange = { canvasSize = it.toInt().coerceIn(Constants.MIN_CANVA_SIZE, Constants.MAX_CANVA_SIZE) },
+                    valueRange = Constants.MIN_CANVA_SIZE.toFloat()..Constants.MAX_CANVA_SIZE.toFloat(),
+                    steps = Constants.MAX_CANVA_SIZE - Constants.MIN_CANVA_SIZE - 1,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -151,7 +152,7 @@ class CrosshairEditorVisualizer : Visualizer {
                                 val gx = (offset.x / cellPx).toInt()
                                 val gy = (offset.y / cellPx).toInt()
                                 if (gx !in 0 until canvasSize || gy !in 0 until canvasSize) return
-                                val idx = gx + gy * 32
+                                val idx = gx + gy * Constants.MAX_CANVA_SIZE
                                 val newPixels = HashMap(pixels.value)
                                 if (erase) newPixels.remove(idx) else newPixels[idx] = penColor.toArgb()
                                 pixels.value = newPixels
@@ -306,7 +307,7 @@ private fun DrawScope.drawGrid(canvasSize: Int, cellPx: Float, pixels: Map<Int, 
 
     for (y in 0 until canvasSize) {
         for (x in 0 until canvasSize) {
-            val idx = x + y * 32
+            val idx = x + y * Constants.MAX_CANVA_SIZE
             val argb = pixels[idx]
             val checker = if ((x + y) % 2 == 0) Color(0xFF3A3F4B) else Color(0xFF2E323C)
             val isCenterCell = isOdd && x == centerIndex && y == centerIndex
@@ -344,7 +345,7 @@ private fun loadPixelsFromBase64(base64: String): Map<Int, Int> {
     for (y in 0 until image.height) {
         for (x in 0 until image.width) {
             val c = image.getRGB(x, y)
-            if (c ushr 24 != 0) map[x + y * 32] = c
+            if (c ushr 24 != 0) map[x + y * Constants.MAX_CANVA_SIZE] = c
         }
     }
     return map

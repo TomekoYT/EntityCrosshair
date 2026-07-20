@@ -1,9 +1,9 @@
 package tomeko.entitycrosshair.utils
 
-private const val max = 32
+//? if = 1.8.9 {
+/*data class Position(val x: Int, val y: Int)
 
-data class Position(val x: Int, val y: Int)
+fun positionToIndex(x: Int, y: Int): Int = x + y * Constants.MAX_CANVA_SIZE
 
-fun positionToIndex(x: Int, y: Int): Int = x + y * max
-
-fun indexToPosition(index: Int): Position = Position(index % max, index / max)
+fun indexToPosition(index: Int): Position = Position(index % Constants.MAX_CANVA_SIZE, index / Constants.MAX_CANVA_SIZE)
+*///?}
