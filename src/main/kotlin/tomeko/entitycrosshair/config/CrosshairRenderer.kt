@@ -27,11 +27,13 @@ import java.awt.image.BufferedImage
 *///?} else {
 import com.mojang.blaze3d.platform.NativeImage
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.minecraft.client.AttackIndicatorStatus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.phys.EntityHitResult
 import tomeko.entitycrosshair.utils.Constants
 import java.awt.image.BufferedImage
@@ -74,6 +76,21 @@ object CrosshairRenderer {
       *///?} else {
     private var defaultTextureSize = Constants.MIN_CANVAS_SIZE
     private var entityTextureSize = Constants.MIN_CANVAS_SIZE
+
+    private val ATTACK_INDICATOR_FULL_SPRITE =
+        Identifier.fromNamespaceAndPath(
+            "minecraft",
+            "textures/gui/sprites/hud/crosshair_attack_indicator_full.png"
+        )
+    private val ATTACK_INDICATOR_BACKGROUND_SPRITE =
+        Identifier.fromNamespaceAndPath(
+            "minecraft",
+            "textures/gui/sprites/hud/crosshair_attack_indicator_background.png"
+        )
+    private val ATTACK_INDICATOR_PROGRESS_SPRITE =
+        Identifier.fromNamespaceAndPath("minecraft",
+            "textures/gui/sprites/hud/crosshair_attack_indicator_progress.png"
+        )
     //?}
 
     fun updateDefaultTexture(
@@ -268,12 +285,12 @@ object CrosshairRenderer {
         val textureScale = size.toFloat() / textureSize
         val translation = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * scale)
 
+        val centerX = (window.guiScaledWidth / 2f) + crosshair.offsetX
+        val centerY = (window.guiScaledHeight / 2f) + crosshair.offsetY
+
         val pose = guiGraphics.pose()
         pose.pushMatrix()
-        pose.translate(
-            (window.guiScaledWidth / 2f) + crosshair.offsetX,
-            (window.guiScaledHeight / 2f) + crosshair.offsetY
-        )
+        pose.translate(centerX, centerY)
         pose.rotate(crosshair.rotation.toFloat())
         pose.translate(translation, translation)
         pose.scale(textureScale, textureScale)
@@ -281,6 +298,9 @@ object CrosshairRenderer {
         drawTexture(guiGraphics, textureLocation, 0, 0, textureSize, textureSize, textureSize, textureSize)
 
         pose.popMatrix()
+
+        val crosshairBottomY = centerY + translation + size
+        renderAttackIndicator(guiGraphics, centerX, crosshairBottomY)
     }
 
     private fun drawTexture(
@@ -292,15 +312,47 @@ object CrosshairRenderer {
         height: Int,
         textureWidth: Int,
         textureHeight: Int,
+        u: Float = 0f,
+        v: Float = 0f,
     ) {
         guiGraphics.blit(
             net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED,
             texture,
             x, y,
-            0f, 0f,
+            u, v,
             width, height,
             textureWidth, textureHeight,
         )
+    }
+
+    private const val ATTACK_INDICATOR_GAP = 2f
+
+    private fun renderAttackIndicator(
+        guiGraphics: GuiGraphicsExtractor,
+        crosshairCenterX: Float,
+        crosshairBottomY: Float
+    ) {
+        val player = mc.player ?: return
+        if (mc.options.attackIndicator().get() != AttackIndicatorStatus.CROSSHAIR) return
+
+        val attackStrength = player.getAttackStrengthScale(0f)
+
+        var showFull = false
+        val target = mc.crosshairPickEntity
+        if (target is LivingEntity && attackStrength >= 1.0f) {
+            showFull = player.currentItemAttackStrengthDelay > 5.0f && target.isAlive
+        }
+
+        val x = (crosshairCenterX - 8f).toInt()
+        val y = (crosshairBottomY + ATTACK_INDICATOR_GAP).toInt()
+
+        if (showFull) {
+            drawTexture(guiGraphics, ATTACK_INDICATOR_FULL_SPRITE, x, y, 16, 16, 16, 16)
+        } else if (attackStrength < 1.0f) {
+            val progressWidth = (attackStrength * 17.0f).toInt()
+            drawTexture(guiGraphics, ATTACK_INDICATOR_BACKGROUND_SPRITE, x, y, 16, 4, 16, 4)
+            drawTexture(guiGraphics, ATTACK_INDICATOR_PROGRESS_SPRITE, x, y, progressWidth, 4, 16, 4)
+        }
     }
 
     fun BufferedImage.toPngBytes(): ByteArray {
