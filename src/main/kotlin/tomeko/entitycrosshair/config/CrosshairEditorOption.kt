@@ -232,10 +232,10 @@ class CrosshairEditorVisualizer : Visualizer {
             }
 
             Row(verticalAlignment = Alignment.Top) {
-                val cellPx = 256f / canvasSize
+                val cellPx = 512f / canvasSize
                 Canvas(
                     modifier = Modifier
-                        .size(256.dp)
+                        .size(512.dp)
                         .pointerInput(canvasSize, penColor) {
                             fun paintAt(offset: Offset, erase: Boolean) {
                                 val gx = (offset.x / cellPx).toInt()

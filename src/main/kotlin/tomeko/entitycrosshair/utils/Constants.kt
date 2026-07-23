@@ -16,6 +16,9 @@ object Constants {
 
     const val MIN_CANVAS_SIZE = 15
     const val MAX_CANVAS_SIZE = 37
+    //? if = 1.8.9 {
+    /*const val PIXEL_SIZE = 384
+    *///?}
 
     //? if = 1.8.9 {
     /*val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${MOD_ID}/caches/"

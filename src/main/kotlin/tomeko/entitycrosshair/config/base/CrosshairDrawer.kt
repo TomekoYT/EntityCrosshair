@@ -141,39 +141,39 @@ class CrosshairDrawer<T : CrosshairEntry>(
         if (size % 2 == 0) {
             nanoVGHelper.drawLine(
                 vg,
-                (x + 128).toFloat(),
-                (y + 108).toFloat(),
-                (x + 128).toFloat(),
-                (y + 148).toFloat(),
+                (x + Constants.PIXEL_SIZE / 2).toFloat(),
+                (y + Constants.PIXEL_SIZE / 2 - 20).toFloat(),
+                (x + Constants.PIXEL_SIZE / 2).toFloat(),
+                (y + Constants.PIXEL_SIZE / 2 + 20).toFloat(),
                 1f,
                 OneColor("703A3AFF").rgb
             )
             nanoVGHelper.drawLine(
                 vg,
-                (x + 108).toFloat(),
-                (y + 128).toFloat(),
-                (x + 148).toFloat(),
-                (y + 128).toFloat(),
+                (x + Constants.PIXEL_SIZE / 2 - 20).toFloat(),
+                (y + Constants.PIXEL_SIZE / 2).toFloat(),
+                (x + Constants.PIXEL_SIZE / 2 + 20).toFloat(),
+                (y + Constants.PIXEL_SIZE / 2).toFloat(),
                 1f,
                 OneColor("703A3AFF").rgb
             )
         }
 
-        importButton.draw(vg, (x + 270).toFloat(), (y + 48).toFloat(), inputHandler)
-        resetButton.draw(vg, (x + 270).toFloat(), (y + 174).toFloat(), inputHandler)
-        saveButton.draw(vg, (x + 270).toFloat(), (y + 222).toFloat(), inputHandler)
-        colorSelector.draw(vg, (x + 270).toFloat(), (y + 126).toFloat(), inputHandler)
-        exportButton.draw(vg, (x + 270).toFloat(), y.toFloat(), inputHandler)
+        importButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 48).toFloat(), inputHandler)
+        resetButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 174).toFloat(), inputHandler)
+        saveButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 222).toFloat(), inputHandler)
+        colorSelector.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 126).toFloat(), inputHandler)
+        exportButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), y.toFloat(), inputHandler)
 
         processRemoveQueue()
 
         val count = canvaConfig.newCrosshairs.size
         val height = (149 + 16) * ceil(count / 4f) - 16
 
-        if (height <= 256) scrollAnimation = DummyAnimation(0f)
+        if (height <= Constants.PIXEL_SIZE) scrollAnimation = DummyAnimation(0f)
         scroll = scrollAnimation.get()
 
-        val scissor = ScissorHelper.INSTANCE.scissor(vg, (x + 349).toFloat(), y.toFloat(), 644f, 256f)
+        val scissor = ScissorHelper.INSTANCE.scissor(vg, (x + Constants.PIXEL_SIZE + 93).toFloat(), y.toFloat(), 644f, Constants.PIXEL_SIZE.toFloat())
         inArea = scissor.isInScissor(inputHandler.mouseX(), inputHandler.mouseY())
 
         if (inArea) {
@@ -184,7 +184,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
             if (dWheel != 0f) {
                 scrollTarget += dWheel
                 if (scrollTarget > 0f) scrollTarget = 0f
-                else if (scrollTarget < 256 - height) scrollTarget = (256 - height)
+                else if (scrollTarget < Constants.PIXEL_SIZE - height) scrollTarget = (Constants.PIXEL_SIZE - height)
                 scrollAnimation = EaseOutQuad(150, scroll, scrollTarget, false)
             }
         } else {
@@ -197,7 +197,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
             val posY = i / 4
             getElement(canvaConfig.newCrosshairs[i]).draw(
                 vg,
-                x + 349 + posX * 165f,
+                x + Constants.PIXEL_SIZE + 93 + posX * 165f,
                 y + posY * 165f + scroll,
                 inputHandler
             )
@@ -260,7 +260,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
 
     override fun finishUpAndClose() = flush()
 
-    override fun getHeight() = 256
+    override fun getHeight() = Constants.PIXEL_SIZE
 
     override fun keyTyped(key: Char, keyCode: Int) {
         if (mc.currentScreen !is OneConfigGui) return
