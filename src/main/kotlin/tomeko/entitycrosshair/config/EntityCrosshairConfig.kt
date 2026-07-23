@@ -178,7 +178,7 @@ object EntityCrosshairConfig : Config(
     var showInGuis = true
 
     @Switch(title = "Show in Third Person", category = CATEGORY_SETTINGS)
-    var showInThirdPerson = true
+    var showInThirdPerson = false
 
     @Switch(title = "Show in Spectator Mode", category = CATEGORY_SETTINGS)
     var showInSpectator = true
