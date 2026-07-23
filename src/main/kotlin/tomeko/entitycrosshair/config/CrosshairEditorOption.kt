@@ -277,7 +277,7 @@ class CrosshairEditorVisualizer : Visualizer {
 
                 Column {
                     Button(onClick = { pixels.value = emptyMap() }, modifier = Modifier.padding(bottom = 4.dp)) {
-                        Text("Reset")
+                        Text("Clear")
                     }
                     Button(onClick = { saveCurrent() }, modifier = Modifier.padding(bottom = 4.dp)) {
                         Text("Save")

@@ -46,7 +46,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
     private var scrollAnimation: Animation = DummyAnimation(0f)
     var inArea = false
 
-    private val resetButton = BasicButton(64, 32, "Reset", 2, ColorPalette.PRIMARY_DESTRUCTIVE)
+    private val clearButton = BasicButton(64, 32, "Clear", 2, ColorPalette.PRIMARY_DESTRUCTIVE)
     private val saveButton = BasicButton(64, 32, "Save", 2, ColorPalette.PRIMARY)
     private val importButton = BasicButton(64, 32, "Import", 2, ColorPalette.SECONDARY)
     private val exportButton = BasicButton(64, 32, "Export", 2, ColorPalette.SECONDARY)
@@ -78,7 +78,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
                 loadImage(img, false, currentCrosshair)
             }
         }
-        resetButton.setClickAction { runAsync { clear() } }
+        clearButton.setClickAction { runAsync { clear() } }
         saveButton.setClickAction {
             runAsync {
                 val image = saveFromDrawer(false) ?: return@runAsync
@@ -160,7 +160,7 @@ class CrosshairDrawer<T : CrosshairEntry>(
         }
 
         importButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 48).toFloat(), inputHandler)
-        resetButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 174).toFloat(), inputHandler)
+        clearButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 174).toFloat(), inputHandler)
         saveButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 222).toFloat(), inputHandler)
         colorSelector.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), (y + 126).toFloat(), inputHandler)
         exportButton.draw(vg, (x + Constants.PIXEL_SIZE + 14).toFloat(), y.toFloat(), inputHandler)
