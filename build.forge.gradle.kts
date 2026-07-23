@@ -45,6 +45,11 @@ loom {
         pack200Provider.set(Pack200Adapter())
         mixinConfig("mixins.$modId.json")
     }
+
+    @Suppress("UnstableApiUsage")
+    mixin {
+        defaultRefmapName.set("mixins.$modId.refmap.json")
+    }
 }
 
 tasks.compileJava {
