@@ -171,8 +171,8 @@ object EntityCrosshairConfig : Config(
     @Switch(title = "Enabled", category = CATEGORY_SETTINGS)
     var enabled: Boolean = true
 
-    @Switch(title = "Show in F3 (Debug)", category = CATEGORY_SETTINGS)
-    var showInDebug = false
+    @Switch(title = "Show with Minecraft's 3D Crosshair", category = CATEGORY_SETTINGS)
+    var showWith3DCrosshair = false
 
     @Switch(title = "Show in GUIs", category = CATEGORY_SETTINGS)
     var showInGuis = true

@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.AttackIndicatorStatus
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.client.gui.components.debug.DebugScreenEntries
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.Entity
@@ -88,7 +89,8 @@ object CrosshairRenderer {
             "textures/gui/sprites/hud/crosshair_attack_indicator_background.png"
         )
     private val ATTACK_INDICATOR_PROGRESS_SPRITE =
-        Identifier.fromNamespaceAndPath("minecraft",
+        Identifier.fromNamespaceAndPath(
+            "minecraft",
             "textures/gui/sprites/hud/crosshair_attack_indicator_progress.png"
         )
     //?}
@@ -232,12 +234,7 @@ object CrosshairRenderer {
 
     private fun shouldShow(): Boolean {
         val player = mc.player ?: return false
-        val debugScreenShowing =
-        //? if >= 26.2 {
-                /*mc.gui.hud.debugOverlay.showDebugScreen()
-                *///?} else {
-            mc.gui.debugOverlay.showDebugScreen()
-        //?}
+        val is3DCrosshairShowing = mc.debugEntries.isCurrentlyEnabled(DebugScreenEntries.THREE_DIMENSIONAL_CROSSHAIR)
         val screen =
         //? if >= 26.2 {
                 /*mc.gui.screen()
@@ -248,8 +245,8 @@ object CrosshairRenderer {
         if (!EntityCrosshairConfig.showInGuis && screen != null) return false
         if (!EntityCrosshairConfig.showInThirdPerson && !mc.options.cameraType.isFirstPerson) return false
         if (EntityCrosshairConfig.showInSpectator && player.isSpectator) return true
-        if (EntityCrosshairConfig.showInDebug && debugScreenShowing) return true
-        if (debugScreenShowing) return false
+        if (EntityCrosshairConfig.showWith3DCrosshair && is3DCrosshairShowing) return true
+        if (is3DCrosshairShowing) return false
         if (player.isSpectator && !EntityCrosshairConfig.showInSpectator) return false
         return true
     }
