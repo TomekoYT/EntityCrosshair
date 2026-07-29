@@ -167,10 +167,6 @@ object EntityCrosshairConfig : Config(
     @CrosshairEditor(category = CATEGORY_ENTITY, entityMode = true)
     var entityCrosshairJson: String = CrosshairSetData.default(DefaultCrosshairs.ENTITY).encode()
 
-    @JvmStatic
-    @Switch(title = "Enabled", category = CATEGORY_SETTINGS)
-    var enabled: Boolean = true
-
     @Switch(title = "Show with Minecraft's 3D Crosshair", category = CATEGORY_SETTINGS)
     var showWith3DCrosshair = false
 

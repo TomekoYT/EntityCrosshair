@@ -54,7 +54,7 @@ object CrosshairRenderer {
         HudElementRegistry.addLast(
             Identifier.fromNamespaceAndPath(Constants.MOD_ID, "crosshair")
         ) { guiGraphicsExtractor, _ ->
-            if (EntityCrosshairConfig.enabled) render(guiGraphicsExtractor)
+            render(guiGraphicsExtractor)
         }
     }
     //?}
