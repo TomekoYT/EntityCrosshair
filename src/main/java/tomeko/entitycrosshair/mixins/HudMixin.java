@@ -1,8 +1,13 @@
 package tomeko.entitycrosshair.mixins;
 
-//? if >= 26.1 {
+//? if >= 1.21.11 {
+
 import net.minecraft.client.DeltaTracker;
+//? if >= 26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+//?} else {
+/*import net.minecraft.client.gui.GuiGraphics;
+*///?}
 //? if >= 26.2 {
 /*import net.minecraft.client.gui.Hud;
  *///?} else {
@@ -21,8 +26,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
         //?}
 )
 public abstract class HudMixin {
-    @Inject(method = "extractCrosshair", at = @At("HEAD"), cancellable = true)
-    private void entitycrosshair$cancelVanillaCrosshair(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+    @Inject(
+            method =
+                    //? if >= 26.1 {
+                    "extractCrosshair",
+                    //?} else {
+                    /*"renderCrosshair",
+            *///?}
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void entitycrosshair$cancelVanillaCrosshair(
+            //? if >= 26.1 {
+            GuiGraphicsExtractor
+            //?} else {
+            /*GuiGraphics
+                    *///?}
+                    guiGraphics,
+            DeltaTracker deltaTracker,
+            CallbackInfo ci
+    ) {
         ci.cancel();
     }
 }

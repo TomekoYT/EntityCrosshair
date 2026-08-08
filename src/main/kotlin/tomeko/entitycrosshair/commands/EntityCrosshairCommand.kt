@@ -8,7 +8,11 @@ import cc.polyfrost.oneconfig.utils.commands.annotations.Main
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+//? if >= 26.1 {
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal
+//?} else {
+/*import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal
+*///?}
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.Minecraft

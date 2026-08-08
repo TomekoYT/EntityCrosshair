@@ -29,7 +29,11 @@ import com.mojang.blaze3d.platform.NativeImage
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.AttackIndicatorStatus
 import net.minecraft.client.Minecraft
+//? if >= 26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor
+//?} else {
+/*import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor
+*///?}
 import net.minecraft.client.gui.components.debug.DebugScreenEntries
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.resources.Identifier
@@ -49,7 +53,7 @@ object CrosshairRenderer {
     private val mc = Minecraft.getInstance()
     //?}
 
-    //? if >= 26.1 {
+    //? if >= 1.21.11 {
     fun register() {
         HudElementRegistry.addLast(
             Identifier.fromNamespaceAndPath(Constants.MOD_ID, "crosshair")
@@ -262,7 +266,7 @@ object CrosshairRenderer {
         return !entity.isInvisible
     }
 
-    //? if >= 26.1 {
+    //? if >= 1.21.11 {
     private fun render(guiGraphics: GuiGraphicsExtractor) {
         if (!shouldShow()) return
 

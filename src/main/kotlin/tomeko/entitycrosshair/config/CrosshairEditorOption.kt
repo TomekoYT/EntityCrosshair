@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.config
 
-//? if >= 26.1 {
+//? if >= 1.21.11 {
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures

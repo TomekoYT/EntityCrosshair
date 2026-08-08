@@ -18,7 +18,7 @@ import java.awt.datatransfer.UnsupportedFlavorException
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-//? if >= 26.1 {
+//? if >= 1.21.11 {
 import java.io.File
 //?}
 import java.util.Base64
@@ -65,7 +65,7 @@ fun toBase64(image: BufferedImage): String {
     return encoded
 }
 
-//? if >= 26.1 {
+//? if >= 1.21.11 {
 fun getImageFromClipboard(): BufferedImage? {
     val contents: Transferable = try {
         Toolkit.getDefaultToolkit().systemClipboard.getContents(null) ?: return null

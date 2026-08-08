@@ -45,7 +45,7 @@ object EntityCrosshairConfig : Config(
     ),
     "${Constants.MOD_ID}.json"
     *///?} else {
-    "${Constants.MOD_ID}.json",
+    "${Constants.MOD_ID}/config.json",
     "/assets/${Constants.MOD_ID}/icon.png",
     Constants.MOD_NAME,
     Category.HUD
@@ -111,7 +111,7 @@ object EntityCrosshairConfig : Config(
     /*var settingsConfig = SettingsConfig()
     *///?}
 
-    //? if >= 26.1 {
+    //? if >= 1.21.11 {
     @Slider(
         title = "Scale",
         min = 0f,

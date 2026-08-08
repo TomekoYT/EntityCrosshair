@@ -11,12 +11,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 //?}
-import tomeko.entitycrosshair.commands.*
-import tomeko.entitycrosshair.config.*
+import tomeko.entitycrosshair.commands.EntityCrosshairCommand
+import tomeko.entitycrosshair.config.CrosshairRenderer
+import tomeko.entitycrosshair.config.EntityCrosshairConfig
 //? if = 1.8.9 {
 /*import tomeko.entitycrosshair.config.base.*
 *///?}
-import tomeko.entitycrosshair.utils.*
+import tomeko.entitycrosshair.utils.Constants
 
 //? if = 1.8.9 {
 /*@Mod(
@@ -27,7 +28,7 @@ import tomeko.entitycrosshair.utils.*
 )
 *///?}
 class EntityCrosshair
-//? if >= 26.1 {
+//? if >= 1.21.11 {
     : ClientModInitializer
 //?}
 {
@@ -48,18 +49,23 @@ class EntityCrosshair
         //?}
         Constants.CACHES_FILE.mkdirs()
 
+        //? if >= 1.21.11 {
+        if (!System.getProperty("os.name").lowercase().contains("mac"))
+            System.setProperty("java.awt.headless", "false")
+        //?}
+
         //? if = 1.8.9 {
         /*EventManager.INSTANCE.register(this)
         *///?}
 
         EntityCrosshairCommand.register()
 
-        //? if >= 26.1 {
+        //? if >= 1.21.11 {
         CrosshairRenderer.register()
         //?}
         EntityCrosshairConfig.register()
 
-        //? if >= 26.1 {
+        //? if >= 1.21.11 {
         ClientLifecycleEvents.CLIENT_STOPPING.register {
             Constants.CACHES_FILE.deleteRecursively()
         }
