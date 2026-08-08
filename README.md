@@ -31,7 +31,7 @@ Fully customizable, centered, colored, dynamic crosshair that changes when looki
 - Supports saving/loading different crosshair layouts
 
 ### Settings
-- Show in F3 (Debug)
+- Show with Minecraft's 3D Crosshair
 - Show in GUIs
 - Show in Third Person
 - Show in Spectator Mode
