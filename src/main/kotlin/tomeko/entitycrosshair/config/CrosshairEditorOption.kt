@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -41,7 +40,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isPrimaryPressed
-import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -76,14 +74,7 @@ class CrosshairEditorVisualizer : Visualizer {
         }
 
         val pixels = remember(prop.id) { mutableStateOf(loadPixelsFromBase64(setData.current.img)) }
-        var penColor by remember(prop.id) {
-            mutableStateOf(
-                Color(
-                    if (entityMode) EntityCrosshairConfig.entityColor.argb
-                    else EntityCrosshairConfig.generalColor.argb
-                )
-            )
-        }
+
         var canvasSize by remember(prop.id) {
             mutableStateOf(
                 setData.canvasSize.coerceIn(
@@ -108,18 +99,6 @@ class CrosshairEditorVisualizer : Visualizer {
             val pngBytes = renderPixelsToImage(canvasSize).toPngBytes()
             if (entityMode) CrosshairRenderer.updateEntityTexture(pngBytes) else CrosshairRenderer.updateDefaultTexture(
                 pngBytes
-            )
-        }
-
-        LaunchedEffect(
-            EntityCrosshairConfig.generalColor.argb,
-            EntityCrosshairConfig.entityColor.argb
-        ) {
-            penColor = Color(
-                if (entityMode)
-                    EntityCrosshairConfig.entityColor.argb
-                else
-                    EntityCrosshairConfig.generalColor.argb
             )
         }
 
@@ -233,6 +212,9 @@ class CrosshairEditorVisualizer : Visualizer {
 
             Row(verticalAlignment = Alignment.Top) {
                 val cellPx = 512f / canvasSize
+                val penColor =
+                    if (entityMode) EntityCrosshairConfig.entityColorState else EntityCrosshairConfig.generalColorState
+
                 Canvas(
                     modifier = Modifier
                         .size(512.dp)
@@ -243,7 +225,7 @@ class CrosshairEditorVisualizer : Visualizer {
                                 if (gx !in 0 until canvasSize || gy !in 0 until canvasSize) return
                                 val idx = gx + gy * Constants.MAX_CANVAS_SIZE
                                 val newPixels = HashMap(pixels.value)
-                                if (erase) newPixels.remove(idx) else newPixels[idx] = penColor.toArgb()
+                                if (erase) newPixels.remove(idx) else newPixels[idx] = penColor.argb
                                 pixels.value = newPixels
                             }
 
@@ -448,25 +430,5 @@ private fun argbToComposeColor(argb: Int): Color {
     val g = (argb ushr 8 and 0xFF) / 255f
     val b = (argb and 0xFF) / 255f
     return Color(red = r, green = g, blue = b, alpha = a)
-}
-
-private fun colorToHex(color: Color): String {
-    val argb = color.toArgb()
-    return String.format("%08X", argb)
-}
-
-private fun hexToColor(hex: String): Color? {
-    val clean = hex.removePrefix("#").trim()
-    if (clean.length != 6 && clean.length != 8) return null
-    return try {
-        val argb = if (clean.length == 6) {
-            (0xFF shl 24) or clean.toInt(16)
-        } else {
-            clean.toLong(16).toInt()
-        }
-        argbToComposeColor(argb)
-    } catch (_: Exception) {
-        null
-    }
 }
 //?}

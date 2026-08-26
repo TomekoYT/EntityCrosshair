@@ -72,8 +72,18 @@ object EntityCrosshairConfig : Config(
         entitySet = CrosshairSetData.decode(entityCrosshairJson, DefaultCrosshairs.ENTITY)
         pushTextures()
 
+        addCallback<PolyColor>("generalColor") {
+            generalColorState = it
+            false
+        }
+
         addCallback<Boolean>("generalEraserEnabled") {
             generalEraserEnabledState = it
+            false
+        }
+
+        addCallback<PolyColor>("entityColor") {
+            entityColorState = it
             false
         }
 
@@ -109,9 +119,7 @@ object EntityCrosshairConfig : Config(
 
     //? if = 1.8.9 {
     /*var settingsConfig = SettingsConfig()
-    *///?}
-
-    //? if >= 1.21.11 {
+    *///?} else {
     @Slider(
         title = "Scale",
         min = 0f,
@@ -126,6 +134,9 @@ object EntityCrosshairConfig : Config(
         category = CATEGORY_GENERAL
     )
     var generalColor = PolyColor(0xFFFFFFFF.toInt())
+
+    var generalColorState by mutableStateOf(generalColor)
+        private set
 
     @Switch(
         title = "Eraser",
@@ -154,6 +165,9 @@ object EntityCrosshairConfig : Config(
         category = CATEGORY_ENTITY
     )
     var entityColor = PolyColor(0xFFFFFFFF.toInt())
+
+    var entityColorState by mutableStateOf(entityColor)
+        private set
 
     @Switch(
         title = "Eraser",
