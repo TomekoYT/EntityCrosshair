@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.config
 
-//? if fabric {
+//? if !forge {
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -43,6 +43,7 @@ import androidx.compose.ui.input.pointer.isPrimaryPressed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import org.polyfrost.oneconfig.api.config.v1.Property
 import org.polyfrost.oneconfig.api.config.v1.Visualizer
 import org.polyfrost.oneconfig.api.config.v1.annotations.Option
@@ -125,13 +126,18 @@ class CrosshairEditorVisualizer : Visualizer {
                 (setData.presets + newCurrent.copy()).toMutableList()
             }
 
-            persist(setData.copy(current = newCurrent, presets = newPresets, canvasSize = canvasSize))
+            persist(
+                setData.copy(
+                    current = newCurrent,
+                    presets = newPresets,
+                    canvasSize = canvasSize
+                )
+            )
         }
 
-        DisposableEffect(Unit) {
-            onDispose {
-                saveCurrent()
-            }
+        LaunchedEffect(prop.id, pixels.value, canvasSize) {
+            delay(250)
+            saveCurrent()
         }
 
         fun loadImageIntoEditor(image: BufferedImage) {
@@ -284,9 +290,24 @@ class CrosshairEditorVisualizer : Visualizer {
                     Column(
                         modifier = Modifier.padding(8.dp).pointerInput(preset) {
                             detectTapGestures {
-                                setData = setData.copy(current = preset.copy())
+                                val newCanvasSize = toBufferedImage(preset.img)
+                                    ?.height
+                                    ?.coerceIn(
+                                        Constants.MIN_CANVAS_SIZE,
+                                        Constants.MAX_CANVAS_SIZE
+                                    )
+                                    ?: canvasSize
+
+                                val newSetData = setData.copy(
+                                    current = preset.copy(),
+                                    canvasSize = newCanvasSize
+                                )
+
+                                setData = newSetData
                                 pixels.value = loadPixelsFromBase64(preset.img)
-                                toBufferedImage(preset.img)?.let { canvasSize = it.height }
+                                canvasSize = newCanvasSize
+
+                                persist(newSetData)
                             }
                         },
                         horizontalAlignment = Alignment.CenterHorizontally,

@@ -10,7 +10,7 @@ class SettingsConfig {
     var enabled = true
 
     @Switch(name = "Show with Minecraft's 3D Crosshair", category = EntityCrosshairConfig.CATEGORY_SETTINGS)
-    var showInDebug = false
+    var showWith3DCrosshair = false
 
     @Switch(name = "Show in GUIs", category = EntityCrosshairConfig.CATEGORY_SETTINGS)
     var showInGuis = true

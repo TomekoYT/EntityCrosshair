@@ -8,6 +8,7 @@ package tomeko.entitycrosshair.config
 /*import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.libs.universal.UResolution
 import cc.polyfrost.oneconfig.utils.dsl.mc
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.EntityRenderer
@@ -24,6 +25,19 @@ import tomeko.entitycrosshair.mixins.GuiIngameAccessor
 import tomeko.entitycrosshair.mixins.MinecraftAccessor
 import tomeko.entitycrosshair.utils.Constants
 import java.awt.image.BufferedImage
+*///?} else if ornithe {
+/*import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Gui
+import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.EntityRenderer
+import net.minecraft.client.renderer.GlStateManager as GL
+import net.minecraft.client.renderer.texture.DynamicTexture
+import net.minecraft.util.ResourceLocation
+import org.lwjgl.opengl.GL11
+import tomeko.entitycrosshair.utils.Constants
+import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
+import javax.imageio.ImageIO
 *///?} else {
 import com.mojang.blaze3d.platform.NativeImage
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
@@ -49,7 +63,7 @@ import kotlin.math.ceil
 object CrosshairRenderer {
     //? if forge {
     //private var drawingImage = BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB)
-    //?} else {
+    //?} else if fabric {
     private val mc = Minecraft.getInstance()
     //?}
 
@@ -68,6 +82,9 @@ object CrosshairRenderer {
         mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE))
     var entityTextureLocation: ResourceLocation? =
         mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE))
+    *///?} else if ornithe {
+    /*private var defaultTextureLocation: ResourceLocation? = null
+    private var entityTextureLocation: ResourceLocation? = null
     *///?} else {
     private var defaultTextureLocation: Identifier? = null
     private var entityTextureLocation: Identifier? = null
@@ -78,10 +95,12 @@ object CrosshairRenderer {
     private var whiteTextureLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, whiteTexture)
     private var vanilla = DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE)
     private var vanillaLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, vanilla)
-      *///?} else {
+    *///?} elif ornithe {
+    /*private var defaultTextureBytes: ByteArray? = null
+    private var entityTextureBytes: ByteArray? = null
+    *///?} else {
     private var defaultTextureSize = Constants.MIN_CANVAS_SIZE
     private var entityTextureSize = Constants.MIN_CANVAS_SIZE
-
     private val ATTACK_INDICATOR_FULL_SPRITE =
         Identifier.fromNamespaceAndPath(
             "minecraft",
@@ -111,6 +130,9 @@ object CrosshairRenderer {
         val texture = DynamicTexture(drawingImage)
         defaultTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", texture)
         updateWhiteTexture()
+        *///?} else if ornithe {
+        /*defaultTextureBytes = pngBytes
+        defaultTextureLocation = null
         *///?} else {
         val (loc, size) = uploadTexture("${Constants.MOD_ID}_default", pngBytes) ?: return
         defaultTextureLocation = loc
@@ -130,6 +152,9 @@ object CrosshairRenderer {
         val texture = DynamicTexture(drawingImage)
         entityTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", texture)
         updateWhiteTexture()
+        *///?} else if ornithe {
+        /*entityTextureBytes = pngBytes
+        entityTextureLocation = null
         *///?} else {
         val (loc, size) = uploadTexture("${Constants.MOD_ID}_entity", pngBytes) ?: return
         entityTextureLocation = loc
@@ -223,6 +248,111 @@ object CrosshairRenderer {
             )
         )
     }
+    *///?} else if ornithe {
+    /*private fun readPng(pngBytes: ByteArray): BufferedImage? = try {
+        ImageIO.read(ByteArrayInputStream(pngBytes))
+    } catch (_: Exception) {
+        null
+    }
+
+    private fun shouldShow(): Boolean {
+        val mc = Minecraft.getMinecraft()
+        val player = mc.thePlayer ?: return false
+        if (!EntityCrosshairConfig.showInGuis && mc.currentScreen != null) return false
+        if (!EntityCrosshairConfig.showInThirdPerson && mc.gameSettings.thirdPersonView != 0) return false
+        if (EntityCrosshairConfig.showInSpectator && mc.playerController.isSpectator) return true
+        if (EntityCrosshairConfig.showWith3DCrosshair && mc.gameSettings.showDebugInfo) return true
+        if (mc.gameSettings.showDebugInfo) return false
+        if (mc.playerController.isSpectator && !EntityCrosshairConfig.showInSpectator) return false
+        return true
+    }
+
+    //? if ornithe {
+    /*private fun ensureTextures() {
+        if (defaultTextureLocation == null) {
+            defaultTextureBytes?.let { pngBytes ->
+                val image = readPng(pngBytes) ?: return@let
+
+                val texture = DynamicTexture(image)
+                defaultTextureLocation =
+                    Minecraft.getMinecraft().textureManager.getDynamicTextureLocation(
+                        "${Constants.MOD_ID}_default",
+                        texture
+                    )
+            }
+        }
+
+        if (entityTextureLocation == null) {
+            entityTextureBytes?.let { pngBytes ->
+                val image = readPng(pngBytes) ?: return@let
+
+                val texture = DynamicTexture(image)
+                entityTextureLocation =
+                    Minecraft.getMinecraft().textureManager.getDynamicTextureLocation(
+                        "${Constants.MOD_ID}_entity",
+                        texture
+                    )
+            }
+        }
+    }
+    *///?}
+
+    fun drawCrosshair(entityRenderer: EntityRenderer) {
+        if (!shouldShow()) return
+
+        val mc = Minecraft.getMinecraft()
+
+        ensureTextures()
+
+        val entityMode = lookingAtEntity()
+        val activeTexture = (if (entityMode) entityTextureLocation else defaultTextureLocation) ?: return
+        val crosshair = if (entityMode) EntityCrosshairConfig.entitySet.current else EntityCrosshairConfig.generalSet.current
+        val configSize = if (entityMode) EntityCrosshairConfig.entitySet.canvasSize else EntityCrosshairConfig.generalSet.canvasSize
+        val scale = (if (entityMode) EntityCrosshairConfig.entityScale else EntityCrosshairConfig.generalScale) / 100f
+        val textureSize = Constants.MIN_CANVAS_SIZE + 1 - configSize % 2
+        val autoScaledSize = textureSize
+
+        entityRenderer.setupOverlayRendering()
+        GL.pushMatrix()
+        GL.tryBlendFuncSeparate(770, 771, 1, 0)
+        GL.enableBlend()
+        GL.enableAlpha()
+        GL11.glColor4f(1f, 1f, 1f, 1f)
+
+        mc.textureManager.bindTexture(activeTexture)
+
+        val mcScale = ScaledResolution(mc).scaleFactor.toFloat()
+        GL.scale(1 / mcScale, 1 / mcScale, 1f)
+        GL.translate(crosshair.offsetX.toFloat(), crosshair.offsetY.toFloat(), 0f)
+        GL.translate((mc.displayWidth / 2).toFloat(), (mc.displayHeight / 2).toFloat(), 0f)
+        GL.rotate(crosshair.rotation.toFloat(), 0f, 0f, 1f)
+
+        val size = ceil(autoScaledSize * mcScale * scale).toInt().coerceAtLeast(1)
+        val translation = ceil((if (crosshair.centered) -autoScaledSize / 2f else -7f) * mcScale * scale).toDouble()
+        GL.translate(translation, translation, 0.0)
+        Gui.drawScaledCustomSizeModalRect(
+            0,
+            0,
+            0f,
+            0f,
+            textureSize,
+            textureSize,
+            size,
+            size,
+            textureSize.toFloat(),
+            textureSize.toFloat(),
+        )
+
+        GL11.glColor4f(1f, 1f, 1f, 1f)
+        GL.disableBlend()
+        GL.popMatrix()
+    }
+
+    fun BufferedImage.toPngBytes(): ByteArray {
+        val out = java.io.ByteArrayOutputStream()
+        ImageIO.write(this, "png", out)
+        return out.toByteArray()
+    }
     *///?} else {
     private fun uploadTexture(name: String, pngBytes: ByteArray): Pair<Identifier, Int>? {
         val nativeImage = try {
@@ -241,8 +371,8 @@ object CrosshairRenderer {
         val is3DCrosshairShowing = mc.debugEntries.isCurrentlyEnabled(DebugScreenEntries.THREE_DIMENSIONAL_CROSSHAIR)
         val screen =
         //? if >= 26.2 {
-                //mc.gui.screen()
-                //?} else {
+        //mc.gui.screen()
+            //?} else {
             mc.screen
         //?}
 
@@ -257,8 +387,8 @@ object CrosshairRenderer {
     //?}
 
     private fun lookingAtEntity(): Boolean {
-        //? if forge {
-        //val entity = mc.objectMouseOver?.entityHit ?: return false
+        //? if 1.8.9 {
+        //val entity = Minecraft.getMinecraft().objectMouseOver?.entityHit ?: return false
         //?} else {
         val hit = mc.hitResult as? EntityHitResult ?: return false
         val entity: Entity = hit.entity

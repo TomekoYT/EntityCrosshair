@@ -7,13 +7,14 @@ import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
-*///?} else {
+*///?} else if ornithe {
+//import net.ornithemc.osl.entrypoints.api.ModInitializer
+//?} else {
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 //?}
-import tomeko.entitycrosshair.commands.EntityCrosshairCommand
-import tomeko.entitycrosshair.config.CrosshairRenderer
-import tomeko.entitycrosshair.config.EntityCrosshairConfig
+import tomeko.entitycrosshair.commands.*
+import tomeko.entitycrosshair.config.*
 //? if forge {
 //import tomeko.entitycrosshair.config.base.*
 //?}
@@ -30,6 +31,8 @@ import tomeko.entitycrosshair.utils.*
 class EntityCrosshair
 //? if fabric {
     : ClientModInitializer
+//?} else if ornithe {
+//: ModInitializer
 //?}
 {
     //? if forge {
@@ -37,7 +40,12 @@ class EntityCrosshair
     //?} else {
     override
     //?}
-    fun onInitializeClient(
+    fun
+            //? if ornithe {
+            //init(
+            //?} else {
+            onInitializeClient(
+        //?}
         //? if forge {
         //event: FMLInitializationEvent
         //?}
@@ -49,9 +57,7 @@ class EntityCrosshair
         //?}
         Constants.CACHES_FILE.mkdirs()
 
-        //? if fabric {
         System.setProperty("java.awt.headless", "false")
-        //?}
 
         //? if forge {
         //EventManager.INSTANCE.register(this)
@@ -70,6 +76,9 @@ class EntityCrosshair
         }
         //?}
 
+        //? if ornithe {
+        //Runtime.getRuntime().addShutdownHook(Thread { Constants.CACHES_FILE.deleteRecursively() })
+        //?}
         Debug.forceLog("${Constants.MOD_VERSION} Initialized!")
     }
 

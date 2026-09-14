@@ -21,7 +21,9 @@ import tomeko.entitycrosshair.config.general.GeneralCanvaConfig
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+//? if fabric {
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
+//?}
 import org.polyfrost.compose.render.PolyColor
 import org.polyfrost.oneconfig.api.config.v1.Config
 import org.polyfrost.oneconfig.api.config.v1.annotations.*
@@ -33,7 +35,6 @@ import tomeko.entitycrosshair.utils.Constants
 import java.lang.reflect.Field
 *///?} else {
 import tomeko.entitycrosshair.utils.toBufferedImage
-
 //?}
 
 object EntityCrosshairConfig : Config(
@@ -45,7 +46,7 @@ object EntityCrosshairConfig : Config(
     ),
     "${Constants.MOD_ID}.json"
     *///?} else {
-    "${Constants.MOD_ID}/config.json",
+    "${Constants.MOD_ID}.json",
     "/assets/${Constants.MOD_ID}/icon.png",
     Constants.MOD_NAME,
     Category.HUD
@@ -249,10 +250,15 @@ object EntityCrosshairConfig : Config(
     }
 
     private fun pushTextures() {
+        //? if fabric {
         ClientLifecycleEvents.CLIENT_STARTED.register { _ ->
             pushGeneralTexture()
             pushEntityTexture()
         }
+        //?} else if ornithe {
+        /*pushGeneralTexture()
+        pushEntityTexture()
+        *///?}
     }
 
     private fun pushGeneralTexture() {

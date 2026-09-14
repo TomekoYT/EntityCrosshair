@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.config
 
-//? if fabric {
+//? if !forge {
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import tomeko.entitycrosshair.utils.Constants

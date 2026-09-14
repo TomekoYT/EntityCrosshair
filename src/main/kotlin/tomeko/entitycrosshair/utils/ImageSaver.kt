@@ -18,7 +18,7 @@ import java.awt.datatransfer.UnsupportedFlavorException
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-//? if fabric {
+//? if !forge {
 import java.io.File
 //?}
 import java.util.Base64
@@ -65,7 +65,7 @@ fun toBase64(image: BufferedImage): String {
     return encoded
 }
 
-//? if fabric {
+//? if !forge {
 fun getImageFromClipboard(): BufferedImage? {
     val contents: Transferable = try {
         Toolkit.getDefaultToolkit().systemClipboard.getContents(null) ?: return null

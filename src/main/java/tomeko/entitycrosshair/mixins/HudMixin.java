@@ -1,7 +1,6 @@
 package tomeko.entitycrosshair.mixins;
 
 //? if fabric {
-
 import net.minecraft.client.DeltaTracker;
 //? if >= 26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor;

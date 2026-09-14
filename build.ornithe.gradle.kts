@@ -30,6 +30,8 @@ plugins {
     id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT"
     id("ploceus") version "1.17-SNAPSHOT"
     id("org.jetbrains.kotlin.jvm") version "2.4.20"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.20"
     id("dev.deftu.gradle.bloom") version "0.2.0"
 }
 
@@ -47,6 +49,8 @@ loom {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(ploceus.mcpMappings("stable", "1.8.9", "22"))
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
