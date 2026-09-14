@@ -11,16 +11,15 @@ val javaVersion = project.property("java_version") as String
 val minecraftVersion = project.property("minecraft_version") as String
 val fabricLoaderVersion = project.property("fabric_loader_version") as String
 val fabricApiVersion = project.property("fabric_api_version") as String
-val fabricLanguageKotlinVersion = project.property("fabric_language_kotlin_version") as String
 
 val oneconfigVersion = project.property("oneconfig_version") as String
 val modMenuVersion = project.property("mod_menu_version") as String
 
 plugins {
     id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
-    id("org.jetbrains.kotlin.jvm") version "2.4.10"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.10"
+    id("org.jetbrains.kotlin.jvm") version "2.4.20"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.20"
     id("dev.deftu.gradle.bloom") version "0.2.0"
 }
 
@@ -32,8 +31,8 @@ repositories {
     mavenCentral()
     google()
 
+    maven("https://api.modrinth.com/maven")
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.stellardrift.ca/repository/maven-snapshots/")
     maven("https://repo.polyfrost.org/releases")
     maven("https://repo.polyfrost.org/snapshots")
     maven("https://maven.terraformersmc.com/")
@@ -47,7 +46,6 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     implementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     implementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-    implementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 
     implementation("org.polyfrost.oneconfig:$minecraftVersion-fabric:$oneconfigVersion")
     implementation("com.terraformersmc:modmenu:$modMenuVersion")
@@ -72,7 +70,6 @@ tasks.processResources {
         "minecraft_version" to minecraftVersion,
         "fabric_loader_version" to fabricLoaderVersion,
         "fabric_api_version" to fabricApiVersion,
-        "fabric_language_kotlin_version" to fabricLanguageKotlinVersion,
 
         "oneconfig_version" to oneconfigVersion,
         "mod_menu_version" to modMenuVersion

@@ -11,10 +11,12 @@ val baseGroup = project.property("base_group") as String
 val javaVersion = project.property("java_version") as String
 val minecraftVersion = project.property("minecraft_version") as String
 
+val oneconfigVersion = project.property("oneconfig_version") as String
+
 plugins {
     idea
     java
-    kotlin("jvm") version "2.4.10"
+    kotlin("jvm") version "2.4.20"
     id("gg.essential.loom") version "1.9.31"
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.gradleup.shadow") version "9.4.1"
@@ -96,7 +98,7 @@ dependencies {
         isTransitive = false
     }
 
-    compileOnly("cc.polyfrost:oneconfig-$minecraftVersion-forge:0.2.2-alpha+")
+    compileOnly("cc.polyfrost:oneconfig-$minecraftVersion-forge:$oneconfigVersion")
     shadowImpl("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-beta+")
 }
 

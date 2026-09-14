@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.config.base
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.config.core.OneColor
 
 interface CanvaConfig<T : CrosshairEntry> {

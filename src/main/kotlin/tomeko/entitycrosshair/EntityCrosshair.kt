@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.events.EventManager
 import cc.polyfrost.oneconfig.events.event.ShutdownEvent
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
@@ -14,12 +14,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
 import tomeko.entitycrosshair.commands.EntityCrosshairCommand
 import tomeko.entitycrosshair.config.CrosshairRenderer
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
-//? if = 1.8.9 {
-/*import tomeko.entitycrosshair.config.base.*
-*///?}
-import tomeko.entitycrosshair.utils.Constants
+//? if forge {
+//import tomeko.entitycrosshair.config.base.*
+//?}
+import tomeko.entitycrosshair.utils.*
 
-//? if = 1.8.9 {
+//? if forge {
 /*@Mod(
     name = Constants.MOD_NAME,
     modid = Constants.MOD_ID,
@@ -28,51 +28,52 @@ import tomeko.entitycrosshair.utils.Constants
 )
 *///?}
 class EntityCrosshair
-//? if >= 1.21.11 {
+//? if fabric {
     : ClientModInitializer
 //?}
 {
-    //? if = 1.8.9 {
-    /*@Mod.EventHandler
-    *///?} else {
+    //? if forge {
+    //@Mod.EventHandler
+    //?} else {
     override
     //?}
     fun onInitializeClient(
-        //? if = 1.8.9 {
-        /*event: FMLInitializationEvent
-        *///?}
+        //? if forge {
+        //event: FMLInitializationEvent
+        //?}
     ) {
-        //? if = 1.8.9 {
-        /*clearCaches()
-        *///?} else {
+        //? if forge {
+        //clearCaches()
+        //?} else {
         Constants.CACHES_FILE.deleteRecursively()
         //?}
         Constants.CACHES_FILE.mkdirs()
 
-        //? if >= 1.21.11 {
-        if (!System.getProperty("os.name").lowercase().contains("mac"))
-            System.setProperty("java.awt.headless", "false")
+        //? if fabric {
+        System.setProperty("java.awt.headless", "false")
         //?}
 
-        //? if = 1.8.9 {
-        /*EventManager.INSTANCE.register(this)
-        *///?}
+        //? if forge {
+        //EventManager.INSTANCE.register(this)
+        //?}
 
         EntityCrosshairCommand.register()
 
-        //? if >= 1.21.11 {
+        //? if fabric {
         CrosshairRenderer.register()
         //?}
         EntityCrosshairConfig.register()
 
-        //? if >= 1.21.11 {
+        //? if fabric {
         ClientLifecycleEvents.CLIENT_STOPPING.register {
             Constants.CACHES_FILE.deleteRecursively()
         }
         //?}
+
+        Debug.forceLog("${Constants.MOD_VERSION} Initialized!")
     }
 
-    //? if = 1.8.9 {
+    //? if forge {
     /*@Mod.EventHandler
     fun onPostInitializeClient(event: FMLPostInitializationEvent) {
         CrosshairRenderer.updateVanilla()

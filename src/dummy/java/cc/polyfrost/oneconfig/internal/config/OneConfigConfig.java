@@ -1,6 +1,6 @@
 package cc.polyfrost.oneconfig.internal.config;
 
-//? if = 1.8.9 {
+//? if forge {
 public class OneConfigConfig {
     public static String currentProfile = "Default Profile";
 }

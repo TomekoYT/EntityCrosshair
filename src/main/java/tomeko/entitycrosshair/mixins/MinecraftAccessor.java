@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.mixins;
 
-//? if = 1.8.9 {
+//? if forge {
 /*import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
 import org.spongepowered.asm.mixin.Mixin;

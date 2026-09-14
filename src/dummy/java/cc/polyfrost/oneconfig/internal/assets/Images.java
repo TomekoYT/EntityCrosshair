@@ -1,6 +1,6 @@
 package cc.polyfrost.oneconfig.internal.assets;
 
-//? if = 1.8.9 {
+//? if forge {
 import cc.polyfrost.oneconfig.renderer.asset.Image;
 
 public class Images {

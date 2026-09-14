@@ -1,10 +1,10 @@
-//? if = 1.8.9 {
-/*@file:Suppress("UnstableAPIUsage")
-*///?}
+//? if forge {
+//@file:Suppress("UnstableAPIUsage")
+//?}
 
 package tomeko.entitycrosshair.config
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.config.Config
 import cc.polyfrost.oneconfig.config.annotations.*
 import cc.polyfrost.oneconfig.config.core.*
@@ -28,7 +28,7 @@ import org.polyfrost.oneconfig.api.config.v1.annotations.*
 import tomeko.entitycrosshair.config.CrosshairRenderer.toPngBytes
 //?}
 import tomeko.entitycrosshair.utils.Constants
-//? if = 1.8.9 {
+//? if forge {
 /*import tomeko.entitycrosshair.utils.indexToPosition
 import java.lang.reflect.Field
 *///?} else {
@@ -37,7 +37,7 @@ import tomeko.entitycrosshair.utils.toBufferedImage
 //?}
 
 object EntityCrosshairConfig : Config(
-    //? if = 1.8.9 {
+    //? if forge {
     /*Mod(
         Constants.MOD_NAME,
         ModType.HUD,
@@ -52,7 +52,7 @@ object EntityCrosshairConfig : Config(
     //?}
 ) {
     fun register() {
-        //? if = 1.8.9 {
+        //? if forge {
         /*initialize()
 
         this.generateOptionList(generalCanvaConfig, mod.defaultPage, this.mod, false)
@@ -94,32 +94,32 @@ object EntityCrosshairConfig : Config(
         //?}
     }
 
-    //? if = 1.8.9 {
-    /*@Exclude
-    *///?}
+    //? if forge {
+    //@Exclude
+    //?}
     const val CATEGORY_GENERAL = "General"
 
-    //? if = 1.8.9 {
-    /*var generalCanvaConfig = GeneralCanvaConfig()
-    *///?}
+    //? if forge {
+    //var generalCanvaConfig = GeneralCanvaConfig()
+    //?}
 
-    //? if = 1.8.9 {
-    /*@Exclude
-    *///?}
+    //? if forge {
+    //@Exclude
+    //?}
     const val CATEGORY_ENTITY = "Entity"
 
-    //? if = 1.8.9 {
-    /*var entityCanvaConfig = EntityCanvaConfig()
-    *///?}
+    //? if forge {
+    //var entityCanvaConfig = EntityCanvaConfig()
+    //?}
 
-    //? if = 1.8.9 {
-    /*@Exclude
-    *///?}
+    //? if forge {
+    //@Exclude
+    //?}
     const val CATEGORY_SETTINGS = "Settings"
 
-    //? if = 1.8.9 {
-    /*var settingsConfig = SettingsConfig()
-    *///?} else {
+    //? if forge {
+    //var settingsConfig = SettingsConfig()
+    //?} else {
     @Slider(
         title = "Scale",
         min = 0f,
@@ -199,9 +199,14 @@ object EntityCrosshairConfig : Config(
     var entitySet: CrosshairSetData = CrosshairSetData.default(DefaultCrosshairs.ENTITY)
         private set
 
+    @Info(title = "Probably should stay disabled", category = CATEGORY_SETTINGS)
+    var debugModeInfo: Nothing? = null
+
+    @Switch(title = "Debug Mode", category = CATEGORY_SETTINGS)
+    var debugModeEnabled = false
     //?}
 
-    //? if = 1.8.9 {
+    //? if forge {
     /*private fun <T : CrosshairEntry> clampOutOfBoundsPixels(canvaConfig: CanvaConfig<T>, drawer: CrosshairDrawer<T>) {
         for ((key) in canvaConfig.drawerMap) {
             val pos = indexToPosition(key)

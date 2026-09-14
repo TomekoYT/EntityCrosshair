@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.config.entity
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.config.annotations.CustomOption
 import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.config.annotations.Slider

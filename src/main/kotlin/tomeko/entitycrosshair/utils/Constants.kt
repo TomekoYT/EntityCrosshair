@@ -1,8 +1,8 @@
 package tomeko.entitycrosshair.utils
 
-//? if = 1.8.9 {
-/*import cc.polyfrost.oneconfig.config.core.ConfigUtils
-*///?} else {
+//? if forge {
+//import cc.polyfrost.oneconfig.config.core.ConfigUtils
+//?} else {
 import net.fabricmc.loader.api.FabricLoader
 //?}
 import java.io.File
@@ -10,17 +10,15 @@ import java.io.File
 object Constants {
     const val MOD_NAME = "@MOD_NAME@"
     const val MOD_ID = "@MOD_ID@"
-    //? if = 1.8.9 {
-    /*const val MOD_VERSION = "@MOD_VERSION@"
-    *///?}
+    const val MOD_VERSION = "@MOD_VERSION@"
 
     const val MIN_CANVAS_SIZE = 15
     const val MAX_CANVAS_SIZE = 37
-    //? if = 1.8.9 {
-    /*const val PIXEL_SIZE = 384
-    *///?}
+    //? if forge {
+    //const val PIXEL_SIZE = 384
+    //?}
 
-    //? if = 1.8.9 {
+    //? if forge {
     /*val CACHES_PATH = "${ConfigUtils.getProfileDir().absolutePath}/${MOD_ID}/caches/"
     val CACHES_FILE = File(CACHES_PATH)
     *///?} else {

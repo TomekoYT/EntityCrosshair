@@ -1,10 +1,10 @@
-//? if = 1.8.9 {
-/*@file:Suppress("UnstableAPIUsage")
-*///?}
+//? if forge {
+//@file:Suppress("UnstableAPIUsage")
+//?}
 
 package tomeko.entitycrosshair.config
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.libs.universal.UResolution
 import cc.polyfrost.oneconfig.utils.dsl.mc
@@ -32,8 +32,8 @@ import net.minecraft.client.Minecraft
 //? if >= 26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor
 //?} else {
-/*import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor
-*///?}
+//import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor
+//?}
 import net.minecraft.client.gui.components.debug.DebugScreenEntries
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.resources.Identifier
@@ -47,13 +47,13 @@ import java.io.ByteArrayInputStream
 import kotlin.math.ceil
 
 object CrosshairRenderer {
-    //? if = 1.8.9 {
-    /*private var drawingImage = BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB)
-    *///?} else {
+    //? if forge {
+    //private var drawingImage = BufferedImage(10, 10, BufferedImage.TYPE_INT_ARGB)
+    //?} else {
     private val mc = Minecraft.getInstance()
     //?}
 
-    //? if >= 1.21.11 {
+    //? if fabric {
     fun register() {
         HudElementRegistry.addLast(
             Identifier.fromNamespaceAndPath(Constants.MOD_ID, "crosshair")
@@ -63,7 +63,7 @@ object CrosshairRenderer {
     }
     //?}
 
-    //? if = 1.8.9 {
+    //? if forge {
     /*var defaultTextureLocation: ResourceLocation? =
         mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE))
     var entityTextureLocation: ResourceLocation? =
@@ -73,7 +73,7 @@ object CrosshairRenderer {
     private var entityTextureLocation: Identifier? = null
     //?}
 
-    //? if = 1.8.9 {
+    //? if forge {
     /*private var whiteTexture = DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE)
     private var whiteTextureLocation = mc.textureManager.getDynamicTextureLocation(Constants.MOD_ID, whiteTexture)
     private var vanilla = DynamicTexture(Constants.MIN_CANVAS_SIZE, Constants.MIN_CANVAS_SIZE)
@@ -100,13 +100,13 @@ object CrosshairRenderer {
     //?}
 
     fun updateDefaultTexture(
-        //? if = 1.8.9 {
-        /*image: OneImage
-        *///?} else {
+        //? if forge {
+        //image: OneImage
+        //?} else {
         pngBytes: ByteArray
         //?}
     ) {
-        //? if = 1.8.9 {
+        //? if forge {
         /*drawingImage = image.image
         val texture = DynamicTexture(drawingImage)
         defaultTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_default", texture)
@@ -119,13 +119,13 @@ object CrosshairRenderer {
     }
 
     fun updateEntityTexture(
-        //? if = 1.8.9 {
-        /*image: OneImage
-        *///?} else {
+        //? if forge {
+        //image: OneImage
+        //?} else {
         pngBytes: ByteArray
         //?}
     ) {
-        //? if = 1.8.9 {
+        //? if forge {
         /*drawingImage = image.image
         val texture = DynamicTexture(drawingImage)
         entityTextureLocation = mc.textureManager.getDynamicTextureLocation("${Constants.MOD_ID}_entity", texture)
@@ -137,7 +137,7 @@ object CrosshairRenderer {
         //?}
     }
 
-    //? if = 1.8.9 {
+    //? if forge {
     /*fun updateWhiteTexture() {
         whiteTexture = DynamicTexture(drawingImage.width, drawingImage.height)
         for (posY in 0..<drawingImage.height) {
@@ -241,8 +241,8 @@ object CrosshairRenderer {
         val is3DCrosshairShowing = mc.debugEntries.isCurrentlyEnabled(DebugScreenEntries.THREE_DIMENSIONAL_CROSSHAIR)
         val screen =
         //? if >= 26.2 {
-                /*mc.gui.screen()
-                *///?} else {
+                //mc.gui.screen()
+                //?} else {
             mc.screen
         //?}
 
@@ -257,16 +257,16 @@ object CrosshairRenderer {
     //?}
 
     private fun lookingAtEntity(): Boolean {
-        //? if = 1.8.9 {
-        /*val entity = mc.objectMouseOver?.entityHit ?: return false
-        *///?} else {
+        //? if forge {
+        //val entity = mc.objectMouseOver?.entityHit ?: return false
+        //?} else {
         val hit = mc.hitResult as? EntityHitResult ?: return false
         val entity: Entity = hit.entity
         //?}
         return !entity.isInvisible
     }
 
-    //? if >= 1.21.11 {
+    //? if fabric {
     private fun render(guiGraphics: GuiGraphicsExtractor) {
         if (!shouldShow()) return
 

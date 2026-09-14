@@ -2,7 +2,7 @@
 
 package tomeko.entitycrosshair.utils
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.utils.IOUtils
 import cc.polyfrost.oneconfig.utils.Notifications
@@ -18,7 +18,7 @@ import java.awt.datatransfer.UnsupportedFlavorException
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-//? if >= 1.21.11 {
+//? if fabric {
 import java.io.File
 //?}
 import java.util.Base64
@@ -35,7 +35,7 @@ fun Image.toBufferedImage(): BufferedImage {
 
 fun export(image: BufferedImage?, name: String): String {
     image ?: return ""
-    //? if = 1.8.9 {
+    //? if forge {
     /*val path = Constants.CACHES_PATH + name + ".png"
     OneImage(image).save(path)
     return path
@@ -65,7 +65,7 @@ fun toBase64(image: BufferedImage): String {
     return encoded
 }
 
-//? if >= 1.21.11 {
+//? if fabric {
 fun getImageFromClipboard(): BufferedImage? {
     val contents: Transferable = try {
         Toolkit.getDefaultToolkit().systemClipboard.getContents(null) ?: return null
@@ -97,7 +97,7 @@ fun getImageFromClipboard(): BufferedImage? {
 
 fun copyToClipboard(image: Image?) {
     image ?: return
-    //? if = 1.8.9 {
+    //? if forge {
     /*IOUtils.copyImageToClipboard(image)
     Notifications.INSTANCE.send(Constants.MOD_NAME, "Crosshair has been copied to clipboard.")
     *///?} else {

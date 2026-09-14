@@ -2,7 +2,7 @@
 
 package tomeko.entitycrosshair.config.base
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.gui.OneConfigGui
 import cc.polyfrost.oneconfig.gui.elements.BasicElement
 import cc.polyfrost.oneconfig.gui.elements.ColorSelector

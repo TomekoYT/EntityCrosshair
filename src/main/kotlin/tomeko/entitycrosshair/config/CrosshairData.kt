@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.config
 
-//? if >= 1.21.11 {
+//? if fabric {
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import tomeko.entitycrosshair.utils.Constants

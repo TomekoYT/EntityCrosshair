@@ -2,7 +2,7 @@
 
 package tomeko.entitycrosshair.config.base
 
-//? if = 1.8.9 {
+//? if forge {
 /*import cc.polyfrost.oneconfig.images.OneImage
 import tomeko.entitycrosshair.config.CrosshairRenderer
 import tomeko.entitycrosshair.config.EntityCrosshairConfig

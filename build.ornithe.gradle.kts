@@ -9,34 +9,36 @@ val baseGroup = project.property("base_group") as String
 
 val javaVersion = project.property("java_version") as String
 val minecraftVersion = project.property("minecraft_version") as String
+
 val fabricLoaderVersion = project.property("fabric_loader_version") as String
-val fabricApiVersion = project.property("fabric_api_version") as String
-val fabricLanguageKotlinVersion = project.property("fabric_language_kotlin_version") as String
+
+val oslVersion = project.property("osl_version") as String
 
 val oneconfigVersion = project.property("oneconfig_version") as String
 val modMenuVersion = project.property("mod_menu_version") as String
-
-plugins {
-    id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT"
-    id("org.jetbrains.kotlin.jvm") version "2.4.10"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.4.10"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.10"
-    id("dev.deftu.gradle.bloom") version "0.2.0"
-}
-
-base {
-    archivesName.set("$modArchivesName-$modVersion-${minecraftVersion}_fabric")
-}
 
 repositories {
     mavenCentral()
     google()
 
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.stellardrift.ca/repository/maven-snapshots/")
+    maven("https://maven.cloverclient.com/releases")
     maven("https://repo.polyfrost.org/releases")
     maven("https://repo.polyfrost.org/snapshots")
-    maven("https://maven.terraformersmc.com/")
+}
+
+plugins {
+    id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT"
+    id("ploceus") version "1.17-SNAPSHOT"
+    id("org.jetbrains.kotlin.jvm") version "2.4.20"
+    id("dev.deftu.gradle.bloom") version "0.2.0"
+}
+
+ploceus {
+    setIntermediaryGeneration(2)
+}
+
+base {
+    archivesName.set("$modArchivesName-$modVersion-${minecraftVersion}_ornithe")
 }
 
 loom {
@@ -44,14 +46,23 @@ loom {
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.officialMojangMappings())
+    mappings(ploceus.mcpMappings("stable", "1.8.9", "22"))
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
+    ploceus.dependOsl(oslVersion)
 
-    modImplementation("org.polyfrost.oneconfig:$minecraftVersion-fabric:$oneconfigVersion")
-    modImplementation("com.terraformersmc:modmenu:$modMenuVersion")
+    modImplementation("org.polyfrost.oneconfig:$minecraftVersion-ornithe:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:commands:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:config:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:config-impl:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:events:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:internal:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:ui:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:utils:$oneconfigVersion")
+    implementation("org.polyfrost.oneconfig:hud:$oneconfigVersion")
+
+    modImplementation("com.terraformersmc:modmenu:$modMenuVersion+mc$minecraftVersion")
 }
 
 bloom {
@@ -72,11 +83,10 @@ tasks.processResources {
         "java_version" to javaVersion,
         "minecraft_version" to minecraftVersion,
         "fabric_loader_version" to fabricLoaderVersion,
-        "fabric_api_version" to fabricApiVersion,
-        "fabric_language_kotlin_version" to fabricLanguageKotlinVersion,
+        "osl_version" to oslVersion,
 
         "oneconfig_version" to oneconfigVersion,
-        "mod_menu_version" to modMenuVersion
+        "mod_menu_version" to modMenuVersion,
     )
 
     inputs.properties(props)

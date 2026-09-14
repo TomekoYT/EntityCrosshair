@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.config.base
 
-//? if = 1.8.9 {
+//? if forge {
 /*interface CrosshairEntry {
     var img: String
     var scale: Int

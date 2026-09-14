@@ -1,6 +1,6 @@
 package tomeko.entitycrosshair.mixins;
 
-//? if = 1.8.9 {
+//? if forge {
 /*import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.GuiIngameForge;
 import tomeko.entitycrosshair.config.EntityCrosshairConfig;
