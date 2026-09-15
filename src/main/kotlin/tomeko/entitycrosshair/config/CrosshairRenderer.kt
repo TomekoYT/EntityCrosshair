@@ -43,11 +43,7 @@ import com.mojang.blaze3d.platform.NativeImage
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.AttackIndicatorStatus
 import net.minecraft.client.Minecraft
-//? if >= 26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor
-//?} else {
-//import net.minecraft.client.gui.GuiGraphics as GuiGraphicsExtractor
-//?}
 import net.minecraft.client.gui.components.debug.DebugScreenEntries
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.resources.Identifier
@@ -371,9 +367,9 @@ object CrosshairRenderer {
         val is3DCrosshairShowing = mc.debugEntries.isCurrentlyEnabled(DebugScreenEntries.THREE_DIMENSIONAL_CROSSHAIR)
         val screen =
         //? if >= 26.2 {
-        //mc.gui.screen()
+        mc.gui.screen()
             //?} else {
-            mc.screen
+            //mc.screen
         //?}
 
         if (!EntityCrosshairConfig.showInGuis && screen != null) return false
