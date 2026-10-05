@@ -216,7 +216,7 @@ class CrosshairEditorVisualizer : Visualizer {
                 )
             }
 
-            Row(verticalAlignment = Alignment.Top) {
+            Row(verticalAlignment = Alignment.Top, modifier = Modifier.height(512.dp)) {
                 val cellPx = 512f / canvasSize
                 val penColor =
                     if (entityMode) EntityCrosshairConfig.entityColorState else EntityCrosshairConfig.generalColorState
@@ -285,7 +285,7 @@ class CrosshairEditorVisualizer : Visualizer {
             Spacer(modifier = Modifier.height(12.dp))
             Text("Saved presets (click to load):", color = Color.White, modifier = Modifier.padding(bottom = 4.dp))
 
-            LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.height(340.dp)) {
+            LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxWidth().height(340.dp)) {
                 items(setData.presets) { preset ->
                     Column(
                         modifier = Modifier.padding(8.dp).pointerInput(preset) {
