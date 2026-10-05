@@ -57,7 +57,8 @@ class EntityCrosshair
         //?}
         Constants.CACHES_FILE.mkdirs()
 
-        System.setProperty("java.awt.headless", "false")
+        if (!Debug.isMac)
+            System.setProperty("java.awt.headless", "false")
 
         //? if forge {
         //EventManager.INSTANCE.register(this)

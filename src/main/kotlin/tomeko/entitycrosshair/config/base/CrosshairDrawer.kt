@@ -13,7 +13,6 @@ import cc.polyfrost.oneconfig.gui.elements.BasicButton
 import cc.polyfrost.oneconfig.images.OneImage
 import cc.polyfrost.oneconfig.libs.universal.UKeyboard
 import cc.polyfrost.oneconfig.renderer.scissor.ScissorHelper
-import cc.polyfrost.oneconfig.utils.IOUtils
 import cc.polyfrost.oneconfig.utils.InputHandler
 import cc.polyfrost.oneconfig.utils.Notifications
 import cc.polyfrost.oneconfig.utils.color.ColorPalette
@@ -24,14 +23,10 @@ import tomeko.entitycrosshair.utils.Constants
 import tomeko.entitycrosshair.utils.toBase64
 import tomeko.entitycrosshair.utils.toBufferedImage
 import tomeko.entitycrosshair.utils.copyToClipboard
+import tomeko.entitycrosshair.utils.getImageFromClipboard
 import tomeko.entitycrosshair.utils.indexToPosition
 import tomeko.entitycrosshair.utils.positionToIndex
-import java.awt.Image
-import java.awt.Toolkit
-import java.awt.datatransfer.DataFlavor
 import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
 import kotlin.collections.iterator
 import kotlin.math.ceil
 
@@ -89,20 +84,9 @@ class CrosshairDrawer<T : CrosshairEntry>(
         exportButton.setClickAction { runAsync { saveFromDrawer(false)?.let { copyToClipboard(it.image) } } }
         importButton.setClickAction {
             runAsync {
-                var image: Image? = null
-                try {
-                    val hopefullyAList = Toolkit.getDefaultToolkit().systemClipboard.getContents(null)
-                        .getTransferData(DataFlavor.javaFileListFlavor)
-                    if (hopefullyAList is List<*>) {
-                        if (hopefullyAList.isEmpty() || hopefullyAList[0] !is File) return@runAsync
-                        val file = hopefullyAList[0] as File
-                        ImageIO.read(file)?.let { image = it }
-                    }
-                } catch (_: Exception) {
-                }
-                if (image == null) image = IOUtils.getImageFromClipboard()
+                val image: BufferedImage? = getImageFromClipboard()
                 if (image != null) {
-                    loadImage(image!!.toBufferedImage(), true)
+                    loadImage(image, true)
                 } else {
                     Notifications.INSTANCE.send(Constants.MOD_NAME, "No image found in clipboard.")
                 }

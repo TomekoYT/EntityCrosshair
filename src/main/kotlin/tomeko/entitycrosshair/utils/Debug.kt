@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
 
 object Debug {
+    val isMac = System.getProperty("os.name").lowercase().contains("mac")
+
     //? if !forge {
     private val LOGGER: Logger = LoggerFactory.getLogger(Constants.MOD_ID)
     //?}
