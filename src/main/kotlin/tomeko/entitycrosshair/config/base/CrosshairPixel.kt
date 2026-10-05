@@ -55,14 +55,17 @@ class CrosshairPixel<T : CrosshairEntry>(
             ColorPalette.SECONDARY.hoveredColor
         }
 
-        hovered = inputHandler.isAreaHovered(x - hitBoxX, y - hitBoxY, (width + hitBoxX).toFloat(), (height + hitBoxY).toFloat())
+        hovered = inputHandler.isAreaHovered(
+            x - hitBoxX,
+            y - hitBoxY,
+            (width + hitBoxX).toFloat(),
+            (height + hitBoxY).toFloat()
+        )
 
         if (hovered && OneConfigGui.INSTANCE.currentColorSelector == null) {
             if (inputHandler.isMouseDown) {
-                set(true, canvaConfig.penColor.rgb)
-            }
-            if (inputHandler.isMouseDown(1)) {
-                set(false, color)
+                if (canvaConfig.eraserEnabled) set(false, color)
+                else set(true, canvaConfig.penColor.rgb)
             }
         }
 

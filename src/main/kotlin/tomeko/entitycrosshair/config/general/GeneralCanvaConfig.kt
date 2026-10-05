@@ -4,6 +4,7 @@ package tomeko.entitycrosshair.config.general
 /*import cc.polyfrost.oneconfig.config.annotations.CustomOption
 import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.config.annotations.Slider
+import cc.polyfrost.oneconfig.config.annotations.Switch
 import cc.polyfrost.oneconfig.config.core.OneColor
 import tomeko.entitycrosshair.config.EntityCrosshairConfig
 import tomeko.entitycrosshair.config.base.CanvaConfig
@@ -17,6 +18,12 @@ class GeneralCanvaConfig : CanvaConfig<GeneralCrosshairEntry> {
     override var newCrosshairs = arrayListOf(GeneralCrosshairEntry())
 
     override var penColor = OneColor(-1)
+
+    @Switch(
+        name = "Eraser",
+        category = EntityCrosshairConfig.CATEGORY_GENERAL
+    )
+    override var eraserEnabled = false
 
     @Slider(
         name = "Canva Size",

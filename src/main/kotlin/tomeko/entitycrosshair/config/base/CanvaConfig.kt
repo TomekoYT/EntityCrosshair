@@ -7,6 +7,7 @@ interface CanvaConfig<T : CrosshairEntry> {
     var drawerMap: HashMap<Int, Int>
     var newCrosshairs: ArrayList<T>
     var penColor: OneColor
+    var eraserEnabled: Boolean
     var canvaSize: Int
     var newCurrentCrosshair: T
 }
